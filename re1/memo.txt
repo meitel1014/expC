@@ -14,11 +14,12 @@ nslookupはホスト名に対応するIPアドレスを調べるコマンド
 ARPはIPアドレスからMACアドレスを取り出すプロトコル
 arpコマンドでは過去の通信で得られたIPアドレスとMACアドレスの対応をキャッシュとして保存したARPテーブルを表示する
 適当なexp*** にpingを送るとarpの出力にそのホストの欄が追加された
+次の週の始めにarpコマンドを実行するとexp***はすべて消えていた
 
 6
 www.ics.es.osaka-u.ac.jpとicsintgw.ics.es.osaka-u.ac.jpにそれぞれtracerouteを実行すると，
 icsintgw.ics.es.osaka-u.ac.jpは終了したが，www.ics.es.osaka-u.ac.jpはicsintgw.ics.es.osaka-u.ac.jpまで辿った後* * *(返事なし)が表示され続けた．
-演習室の環境ではhttp/httpsでしか外部と通信できないが，tracerouteではmanによるとICMPを使用していてゲートウェイで通信が止められているものと思われる．
+演習室の環境ではhttp/httpsでしか外部と通信できないが，tracerouteではmanによるとICMPを使用していてゲートウェイicsintgw.ics.es.osaka-u.ac.jpで通信が止められているものと思われる．
 同様の理由で，yahoo.comなどの適当なドメインへのpingが届かなかった．
 
 192.168.16.254の正体?
