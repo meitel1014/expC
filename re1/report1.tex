@@ -1,0 +1,107 @@
+\documentclass[a4j,10pt,titlepage]{jsarticle}
+\renewcommand{\headfont}{\bfseries}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{url}
+\title{情報科学演習C レポート1}
+\author{藤田 勇樹 \\
+大阪大学 基礎工学部 情報科学科 ソフトウェア科学コース\\
+学籍番号: 09B16068 \\
+メールアドレス: u461566g@ecs.osaka-u.ac.jp \\
+担当教員\\
+小島 英春 助教授 \\
+内山 彰 助教授}
+\date{提出日: 2018年1月10日}
+
+\begin{document}
+\maketitle
+\section{課題1-1}
+\subsection{pingコマンド}
+pingコマンドを実行すると，以下のような出力が得られる．
+\begin{verbatim}
+$ ping exp101 
+PING exp101.exp.ics.es.osaka-u.ac.jp (192.168.16.65) 56(84) bytes of data.
+64 bytes from exp101.exp.ics.es.osaka-u.ac.jp (192.168.16.65): icmp_seq=1 ttl=64 time=0.134 ms
+64 bytes from exp101.exp.ics.es.osaka-u.ac.jp (192.168.16.65): icmp_seq=2 ttl=64 time=0.180 ms
+64 bytes from exp101.exp.ics.es.osaka-u.ac.jp (192.168.16.65): icmp_seq=3 ttl=64 time=0.194 ms
+64 bytes from exp101.exp.ics.es.osaka-u.ac.jp (192.168.16.65): icmp_seq=4 ttl=64 time=0.209 ms
+64 bytes from exp101.exp.ics.es.osaka-u.ac.jp (192.168.16.65): icmp_seq=5 ttl=64 time=0.185 ms
+
+--- exp101.exp.ics.es.osaka-u.ac.jp ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 3999ms
+rtt min/avg/max/mdev = 0.134/0.180/0.209/0.027 ms
+\end{verbatim}
+
+manコマンドでpingについて調べたところ，以下の事柄がわかった．pingコマンドでは，引数に指定されたホストにICMPプロトコルのECHO\_REQUESTを送り，それが正しく送られたか，またそれにかかった時間を出力する．ICMPプロトコルとは，マシンの状態やエラーメッセージなどを送受信するプロトコルで，ECHO\_REQUESTはICMPでやりとりするメッセージの一種である．
+
+実際の出力の意味を説明する．
+\begin{verbatim}
+64 bytes from exp101.exp.ics.es.osaka-u.ac.jp (192.168.16.65): icmp_seq=1 ttl=64 time=0.134 ms
+\end{verbatim}
+これは，64バイトのパケット1個目をexp101(IPアドレス192.168.16.65)にTTL=64で送り，応答を受け取るまで0.134ミリ秒かかったということである．TTLとはTime to Liveの略で，パケットがあるノードから別のノードに受け渡される回数の上限を表す．パケットがノードから送信されるたびにTTLは1ずつ減り，0になるとそのパケットは宛先に辿りつけなかったものとして破棄される．
+
+\subsection{ドメイン名とIPアドレス}\label{sec:domainip}
+\url{http://www-higashi.ist.osaka-u.ac.jp/}と\url{http://133.1.17.66/}にアクセスしたところ，全く同じページが表示された．そのため，\verb|www-higashi.ist.osaka-u.ac.jp|と\verb|133.1.17.66|は同じものを表すと思われる．
+
+\subsection{nslookupコマンド}\label{sec:nslookup}
+nslookupをmanコマンドで調べたところ，nslookupはホスト名に対応するIPアドレスを調べるコマンドであった．実際に，\verb|www-higashi.ist.osaka-u.ac.jp|を実行すると，\ref{sec:domainip}節の通り\verb|133.1.17.66|が得られた．また土屋研\url{www-ise4.ist.osaka-u.ac.jp}に対応するのは\verb|133.1.16.2|であった．
+
+\section{課題1-2}
+\subsection{arpコマンド}
+ARPは，IPアドレスからMACアドレスを取り出すプロトコルである．また，ARPテーブルとは，過去の通信でARPプロトコルを使用した際に得られたIPアドレスとMACアドレスの対応をキャッシュとして保存したものである．
+arpコマンドではARPテーブルを表示する．実際に\verb|arp -a|コマンドを実行すると以下のような出力が得られる．
+\begin{verbatim}
+exp029.exp.ics.es.osaka-u.ac.jp (192.168.16.62) at 00:50:56:b7:0d:47 [ether] on ens192
+cups.exp.ics.es.osaka-u.ac.jp (192.168.16.253) at 00:50:56:b7:5b:4b [ether] on ens192
+exp036.exp.ics.es.osaka-u.ac.jp (192.168.16.52) at 00:50:56:b7:59:b6 [ether] on ens192
+? (192.168.16.254) at 14:18:77:10:31:aa [ether] on ens192
+dhcp-01.exp.ics.es.osaka-u.ac.jp (192.168.16.240) at 00:50:56:b7:21:6e [ether] on ens192
+svm-01.exp.ics.es.osaka-u.ac.jp (192.168.16.241) at 02:a0:98:c4:b2:cf [ether] on ens192
+\end{verbatim}
+exp029の端末で\verb|ifconfig|でMACアドレスを確認してもらうと，確かに同じMACアドレスであった．
+
+\subsection{ping後のarpコマンド}
+\verb|ping exp092|を行った後に再びarpコマンドを実行すると，以下の行が追加されていた．
+\begin{verbatim}
+exp092.exp.ics.es.osaka-u.ac.jp (192.168.16.18) at 00:50:56:b7:79:90 [ether] on ens192
+\end{verbatim}
+このことから，ARPテーブルには過去の通信で得られたIPアドレスとMACアドレスの対応が自動で格納されることがわかる．
+
+\subsection{tracerouteコマンド}
+www.ics.es.osaka-u.ac.jpとicsintgw.ics.es.osaka-u.ac.jpにそれぞれtracerouteを実行すると，どちらも以下のような出力が得られた．
+\begin{verbatim}
+traceroute to icsintgw.ics.es.osaka-u.ac.jp (133.1.240.81), 30 hops max, 60 byte packets
+ 1  192.168.16.254 (192.168.16.254)  0.375 ms  0.446 ms  0.508 ms
+ 2  icsintsvgw.ics.es.osaka-u.ac.jp (133.1.240.254)  0.720 ms  0.882 ms  1.006 ms
+ 3  icsintgw.ics.es.osaka-u.ac.jp (133.1.240.81)  1.777 ms  2.392 ms  9.386 ms
+\end{verbatim}
+
+ただし，icsintgw.ics.es.osaka-u.ac.jpは終了したが，www.ics.es.osaka-u.ac.jpはicsintgw.ics.es.osaka-u.ac.jpまで辿った後* * *(返事なし)が表示され続けた．
+
+演習室の環境ではhttp/httpsでしか外部と通信できないが，tracerouteではmanによるとICMPを使用しているため，ゲートウェイicsintgw.ics.es.osaka-u.ac.jpで通信が止められているものと思われる．
+yahoo.comなどの適当なドメインへのpingが届かなかったのも同様の理由のためであると思われる．
+
+\subsection{演習室のネットワーク構成}
+前節までの結果より，演習室のネットワーク構成は以下の図のようになっていると思われる．
+\subsection{netstatコマンド}
+\verb|netstat|コマンドを実行すると，以下のような出力が得られた．
+\begin{verbatim}
+netstat -r
+カーネルIP経路テーブル
+受信先サイト    ゲートウェイ    ネットマスク   フラグ   MSS Window  irtt インタフェース
+default         192.168.16.254  0.0.0.0         UG        0 0          0 ens192
+link-local      *               255.255.0.0     U         0 0          0 ens192
+192.168.16.0    *               255.255.255.0   U         0 0          0 ens192
+\end{verbatim}
+manコマンドによると，\verb|netstat -r|コマンドでは，カーネルのルーティングテーブルを出力する．ルーティングテーブルとは，受け取ったパケットの宛先に応じて，次にどのノードにパケットを転送すればよいかを記録してあるものである．例えば，受け取ったパケットの宛先が133.1.17.66であれば，一番上の192.168.16.254に転送する．
+
+\subsection{再びarpコマンド}
+前節までの作業を行った次の週に\verb|arp -a|コマンドを実行すると，演習室の端末のARPテーブルが消えていた．このことから，自動的に追加され長時間使用していないARPテーブルは削除されることがわかる．
+
+\section{課題1-3}
+\subsection{標準ライブラリ関数とシステムコールの違い}
+\subsection{straceコマンド}
+\section{発展課題}
+\subsection{ネットワーク関連のコマンド}
+\subsection{hello100回}
+
+\end{document}
