@@ -23,3 +23,14 @@ icsintgw.ics.es.osaka-u.ac.jpは終了したが，www.ics.es.osaka-u.ac.jpはics
 同様の理由で，yahoo.comなどの適当なドメインへのpingが届かなかった．
 
 192.168.16.254の正体?
+
+exp063のipアドレス 192.168.16.19
+exp036 192.168.16.52
+
+netstat -r
+カーネルIP経路テーブル
+受信先サイト    ゲートウェイ    ネットマスク   フラグ   MSS Window  irtt インタフェース
+default         192.168.16.254  0.0.0.0         UG        0 0          0 ens192
+link-local      *               255.255.0.0     U         0 0          0 ens192
+192.168.16.0    *               255.255.255.0   U         0 0          0 ens192
+
