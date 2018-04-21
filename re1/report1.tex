@@ -75,13 +75,15 @@ traceroute to icsintgw.ics.es.osaka-u.ac.jp (133.1.240.81), 30 hops max, 60 byte
  3  icsintgw.ics.es.osaka-u.ac.jp (133.1.240.81)  1.777 ms  2.392 ms  9.386 ms
 \end{verbatim}
 
-ただし，icsintgw.ics.es.osaka-u.ac.jpは終了したが，www.ics.es.osaka-u.ac.jpはicsintgw.ics.es.osaka-u.ac.jpまで辿った後* * *(返事なし)が表示され続けた．
+ただし，icsintgw.ics.es.osaka-u.ac.jpは終了したが，www.ics.es.osaka-u.ac.jpはicsintgw.ics.es.osaka-u.ac.jpまで辿った後，応答がないことを表す``* * *''が表示され続けた．
 
 演習室の環境ではhttp/httpsでしか外部と通信できないが，tracerouteではmanによるとICMPを使用しているため，ゲートウェイicsintgw.ics.es.osaka-u.ac.jpで通信が止められているものと思われる．
 yahoo.comなどの適当なドメインへのpingが届かなかったのも同様の理由のためであると思われる．
 
 \subsection{演習室のネットワーク構成}
 前節までの結果より，演習室のネットワーク構成は以下の図のようになっていると思われる．
+
+
 \subsection{netstatコマンド}
 \verb|netstat|コマンドを実行すると，以下のような出力が得られた．
 \begin{verbatim}
@@ -99,6 +101,8 @@ manコマンドによると，\verb|netstat -r|コマンドでは，カーネル
 
 \section{課題1-3}
 \subsection{標準ライブラリ関数とシステムコールの違い}
+
+
 \subsection{straceコマンド}
 \section{発展課題}
 \subsection{ネットワーク関連のコマンド}
