@@ -112,14 +112,52 @@ $ strace -c echo hello
 を実行したところ，以下の出力が得られた．
 
 \begin{verbatim}
-
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+  0.00    0.000000           0         1           read
+  0.00    0.000000           0         1           write
+  0.00    0.000000           0         3           open
+  0.00    0.000000           0         5           close
+  0.00    0.000000           0         4           fstat
+  0.00    0.000000           0         8           mmap
+  0.00    0.000000           0         4           mprotect
+  0.00    0.000000           0         1           munmap
+  0.00    0.000000           0         3           brk
+  0.00    0.000000           0         3         3 access
+  0.00    0.000000           0         1           execve
+  0.00    0.000000           0         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.000000                    35         3 total
 \end{verbatim}
 
 ここでは，``\verb|echo hello|''を実行し，どのシステムコールが何回呼ばれたかをcallsの列に出力している．また，それぞれのシステムコールの種類ごとにかかった時間とその割合も出力される．
 
 また，``\verb|ls|''では以下の出力が得られた．出力されるcallsの数はディレクトリによって異なる場合がある．
 \begin{verbatim}
-
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+  0.00    0.000000           0         7           read
+  0.00    0.000000           0         5           write
+  0.00    0.000000           0         9           open
+  0.00    0.000000           0        11           close
+  0.00    0.000000           0        10           fstat
+  0.00    0.000000           0        19           mmap
+  0.00    0.000000           0        12           mprotect
+  0.00    0.000000           0         1           munmap
+  0.00    0.000000           0         3           brk
+  0.00    0.000000           0         2           rt_sigaction
+  0.00    0.000000           0         1           rt_sigprocmask
+  0.00    0.000000           0         2           ioctl
+  0.00    0.000000           0         7         7 access
+  0.00    0.000000           0         1           execve
+  0.00    0.000000           0         2           getdents
+  0.00    0.000000           0         1           getrlimit
+  0.00    0.000000           0         2         2 statfs
+  0.00    0.000000           0         1           arch_prctl
+  0.00    0.000000           0         1           set_tid_address
+  0.00    0.000000           0         1           set_robust_list
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.000000                    98         9 total
 \end{verbatim}
 
 \verb|echo hello|に比べ，いくつかのシステムコールが追加されているほか，open,closeなどファイル操作の回数が増えている．しかし，``\verb|ls|''コマンドはファイルの内容を調べるものではないため，他の要因でopenやcloseの回数が増えていると考えた．そこで，openで何を開いているかを調べるため以下のコマンドを実行した．
@@ -131,16 +169,25 @@ strace ls 2>&1 1>/dev/null | grep open
 まず，オプションなしの\verb|strace|コマンドは呼び出されたシステムコールを逐一出力する．また，\verb|strace|コマンドの出力は調べる対象のコマンドの出力と被らないようにするためか標準エラー出力に出力されている．そのため標準エラー出力のみから``open''のある行を取り出している．このコマンドを実行すると，以下の出力が得られた．
 
 \begin{verbatim}
-strace ls 2>&1 1>/dev/null | grep open
-\end{verbatim}
-
-比較のため，``\verb|echo hello|''でも同様の調査を行った．
-
-\begin{verbatim}
-strace ls 2>&1 1>/dev/null | grep open
+open("/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+open("/lib/x86_64-linux-gnu/libselinux.so.1", O_RDONLY|O_CLOEXEC) = 3
+open("/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+open("/lib/x86_64-linux-gnu/libpcre.so.3", O_RDONLY|O_CLOEXEC) = 3
+open("/lib/x86_64-linux-gnu/libdl.so.2", O_RDONLY|O_CLOEXEC) = 3
+open("/lib/x86_64-linux-gnu/libpthread.so.0", O_RDONLY|O_CLOEXEC) = 3
+open("/proc/filesystems", O_RDONLY)     = 3
+open("/usr/lib/locale/locale-archive", O_RDONLY|O_CLOEXEC) = 3
+open(".", O_RDONLY|O_NONBLOCK|O_DIRECTORY|O_CLOEXEC) = 3
 \end{verbatim}
 
 ここで，libc.so.6などの/lib配下のファイルは，標準ライブラリ関数の実装であり，普段C言語で標準ライブラリを使用した際には，実際にはこれらのファイルの内容が実行される．
+比較のため，``\verb|echo hello|''でも同様の調査を行った．
+
+\begin{verbatim}
+open("/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+open("/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+open("/usr/lib/locale/locale-archive", O_RDONLY|O_CLOEXEC) = 3
+\end{verbatim}
 
 これらを比較すると，lsの方では使用しているライブラリが増えているほか，/proc/filesystemsなどファイルシステム関連の情報を参照していることがわかる．また，カレントディレクトリを開くのにもopenを使用している．
 
@@ -204,3 +251,4 @@ fingerコマンドおよびtalkコマンドは演習室の環境ではインス�
 
 
 \end{document}
+
