@@ -1,10 +1,24 @@
-hello.c
-hello.log
-hello100
-hello100.c
-kadai1(2).pdf
-ls.log
-memo.txt
-nslookup.log
-ping.log
-siryou(2).pdf
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+  0.00    0.000000           0         7           read
+  0.00    0.000000           0         5           write
+  0.00    0.000000           0         9           open
+  0.00    0.000000           0        11           close
+  0.00    0.000000           0        10           fstat
+  0.00    0.000000           0        19           mmap
+  0.00    0.000000           0        12           mprotect
+  0.00    0.000000           0         1           munmap
+  0.00    0.000000           0         3           brk
+  0.00    0.000000           0         2           rt_sigaction
+  0.00    0.000000           0         1           rt_sigprocmask
+  0.00    0.000000           0         2           ioctl
+  0.00    0.000000           0         7         7 access
+  0.00    0.000000           0         1           execve
+  0.00    0.000000           0         2           getdents
+  0.00    0.000000           0         1           getrlimit
+  0.00    0.000000           0         2         2 statfs
+  0.00    0.000000           0         1           arch_prctl
+  0.00    0.000000           0         1           set_tid_address
+  0.00    0.000000           0         1           set_robust_list
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.000000                    98         9 total
