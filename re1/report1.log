@@ -1,4 +1,4 @@
-This is e-pTeX, Version 3.14159265-p3.7-160201-2.6 (utf8.sjis) (TeX Live 2016/W32TeX) (preloaded format=platex 2017.1.7)  19 APR 2018 16:17
+This is e-pTeX, Version 3.14159265-p3.7-160201-2.6 (utf8.sjis) (TeX Live 2016/W32TeX) (preloaded format=platex 2017.1.7)  22 APR 2018 18:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -187,31 +187,44 @@ LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
 LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
 (Font)              scaled to size 4.805pt on input line 43.
 [1]
-Overfull \hbox (8.89925pt too wide) in paragraph at lines 59--59
+Overfull \hbox (8.89925pt too wide) in paragraph at lines 61--61
 []\OT1/cmtt/m/n/10 dhcp-01.exp.ics.es.osaka-u.ac.jp (192.168.16.240) at 00:50:5
 6:b7:21:6e [ether] on ens192[] 
  []
 
 
-Overfull \hbox (3.64929pt too wide) in paragraph at lines 59--59
+Overfull \hbox (3.64929pt too wide) in paragraph at lines 61--61
 []\OT1/cmtt/m/n/10 svm-01.exp.ics.es.osaka-u.ac.jp (192.168.16.241) at 02:a0:98
 :c4:b2:cf [ether] on ens192[] 
  []
 
 
-Overfull \hbox (8.89925pt too wide) in paragraph at lines 76--76
+Overfull \hbox (8.89925pt too wide) in paragraph at lines 78--78
 []\OT1/cmtt/m/n/10 traceroute to icsintgw.ics.es.osaka-u.ac.jp (133.1.240.81), 
 30 hops max, 60 byte packets[] 
  []
 
-[2] [3] (./report1.aux) ) 
-Here is how much of TeX's memory you used:
- 904 strings out of 493683
- 10561 string characters out of 6152643
- 72571 words of memory out of 5000000
- 4516 multiletter control sequences out of 15000+600000
- 14150 words of font info for 64 fonts, out of 8000000 for 9000
- 934 hyphenation exceptions out of 8191
- 25i,6n,21p,370b,230s stack positions out of 5000i,500n,10000p,200000b,80000s
+[2] [3] [4]
+LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <10> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 190.
+LaTeX Font Info:    Font shape `JT1/gt/m/n' will be
+(Font)              scaled to size 9.60999pt on input line 190.
+LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <10> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 190.
+LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
+(Font)              scaled to size 9.60999pt on input line 190.
+ [5] [6] (./report1.aux)
 
-Output written on report1.dvi (4 pages, 10240 bytes).
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 909 strings out of 493683
+ 10620 string characters out of 6152643
+ 76571 words of memory out of 5000000
+ 4520 multiletter control sequences out of 15000+600000
+ 14458 words of font info for 65 fonts, out of 8000000 for 9000
+ 934 hyphenation exceptions out of 8191
+ 25i,6n,21p,427b,319s stack positions out of 5000i,500n,10000p,200000b,80000s
+
+Output written on report1.dvi (7 pages, 17908 bytes).
