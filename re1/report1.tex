@@ -2,6 +2,7 @@
 \renewcommand{\headfont}{\bfseries}
 \usepackage[dvipdfmx]{graphicx}
 \usepackage{url}
+\usepackage{here}
 \title{情報科学演習C レポート1}
 \author{藤田 勇樹 \\
 大阪大学 基礎工学部 情報科学科 ソフトウェア科学コース\\
@@ -10,13 +11,13 @@
 担当教員\\
 小島 英春 助教授 \\
 内山 彰 助教授}
-\date{提出日: 2018年1月10日}
+\date{提出日: 2018年4月22日}
 
 \begin{document}
 \maketitle
 \section{課題1-1}
 \subsection{pingコマンド}\label{sec:ping}
-pingコマンドを実行すると，以下のような出力が得られる．
+\verb|ping|コマンドを実行すると，以下のような出力が得られる．
 \begin{verbatim}
 $ ping exp101 
 PING exp101.exp.ics.es.osaka-u.ac.jp (192.168.16.65) 56(84) bytes of data.
@@ -31,13 +32,15 @@ PING exp101.exp.ics.es.osaka-u.ac.jp (192.168.16.65) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.134/0.180/0.209/0.027 ms
 \end{verbatim}
 
-manコマンドでpingについて調べたところ，以下の事柄がわかった．pingコマンドでは，引数に指定されたホストにICMPプロトコルのECHO\_REQUESTを送り，それが正しく送られたか，またそれにかかった時間を出力する．ICMPプロトコルとは，マシンの状態やエラーメッセージなどを送受信するプロトコルで，ECHO\_REQUESTはICMPでやりとりするメッセージの一種である．
+オンラインマニュアルで\verb|ping|について調べたところ，以下の事柄がわかった．\verb|ping|コマンドでは，引数に指定されたホストにICMPプロトコルのECHO\_REQUESTを送り，それが正しく送られたか，またそれにかかった時間を出力する．ICMPプロトコルとは，マシンの状態やエラーメッセージなどを送受信するプロトコルで，ECHO\_REQUESTはICMPでやりとりするメッセージの一種である．
 
 実際の出力の意味を説明する．
 \begin{verbatim}
 64 bytes from exp101.exp.ics.es.osaka-u.ac.jp (192.168.16.65): icmp_seq=1 ttl=64 time=0.134 ms
 \end{verbatim}
 これは，64バイトのパケット1個目をexp101(IPアドレス192.168.16.65)にTTL=64で送り，応答を受け取るまで0.134ミリ秒かかったということである．TTLとはTime to Liveの略で，パケットがあるノードから別のノードに受け渡される回数の上限を表す．パケットがノードから送信されるたびにTTLは1ずつ減り，0になるとそのパケットは宛先に辿りつけなかったものとして破棄される．
+
+しかし，yahoo.comなどの外部ホストに\verb|ping|を実行したところパケットが届かなかった．これについては\ref{sec:traceroute}で考察する．
 
 \subsection{ドメイン名とIPアドレス}\label{sec:domainip}
 \url{http://www-higashi.ist.osaka-u.ac.jp/}と\url{http://133.1.17.66/}にアクセスしたところ，全く同じページが表示された．そのため，\verb|www-higashi.ist.osaka-u.ac.jp|と\verb|133.1.17.66|は同じものを表すと思われる．
@@ -49,8 +52,8 @@ nslookupをmanコマンドで調べたところ，nslookupはホスト名に対�
 
 \section{課題1-2}
 \subsection{arpコマンド}
-ARPは，IPアドレスからMACアドレスを取り出すプロトコルである．また，ARPテーブルとは，過去の通信でARPプロトコルを使用した際に得られたIPアドレスとMACアドレスの対応をキャッシュとして保存したものである．
-arpコマンドではARPテーブルを表示する．実際に\verb|arp -a|コマンドを実行すると以下のような出力が得られる．
+ARPは，IPアドレスがわかっているホストにMACアドレスを問い合わせるプロトコルである．また，ARPテーブルとは，過去の通信でARPプロトコルを使用した際に得られたIPアドレスとMACアドレスの対応をキャッシュとして保存したものである．
+\verb|arp|コマンドではARPテーブルを表示する．実際に\verb|arp -a|コマンドを実行すると以下のような出力が得られる．
 \begin{verbatim}
 exp029.exp.ics.es.osaka-u.ac.jp (192.168.16.62) at 00:50:56:b7:0d:47 [ether] on ens192
 cups.exp.ics.es.osaka-u.ac.jp (192.168.16.253) at 00:50:56:b7:5b:4b [ether] on ens192
@@ -68,8 +71,8 @@ exp092.exp.ics.es.osaka-u.ac.jp (192.168.16.18) at 00:50:56:b7:79:90 [ether] on 
 \end{verbatim}
 このことから，ARPテーブルには過去の通信で得られたIPアドレスとMACアドレスの対応が自動で格納されることがわかる．
 
-\subsection{tracerouteコマンド}
-www.ics.es.osaka-u.ac.jpとicsintgw.ics.es.osaka-u.ac.jpにそれぞれtracerouteを実行すると，どちらも以下のような出力が得られた．
+\subsection{tracerouteコマンド}\label{sec:traceroute}
+www.ics.es.osaka-u.ac.jpとicsintgw.ics.es.osaka-u.ac.jpにそれぞれ\verb|traceroute|を実行すると，どちらも以下のような出力が得られた．
 \begin{verbatim}
 traceroute to icsintgw.ics.es.osaka-u.ac.jp (133.1.240.81), 30 hops max, 60 byte packets
  1  192.168.16.254 (192.168.16.254)  0.375 ms  0.446 ms  0.508 ms
@@ -79,12 +82,17 @@ traceroute to icsintgw.ics.es.osaka-u.ac.jp (133.1.240.81), 30 hops max, 60 byte
 
 ただし，icsintgw.ics.es.osaka-u.ac.jpは終了したが，www.ics.es.osaka-u.ac.jpはicsintgw.ics.es.osaka-u.ac.jpまで辿った後，応答がないことを表す``* * *''が表示され続けた．
 
-演習室の環境ではhttp/httpsでしか外部と通信できないが，tracerouteではmanによるとICMPを使用しているため，ゲートウェイicsintgw.ics.es.osaka-u.ac.jpで通信が止められているものと考えられる．
-yahoo.comなどの適当なドメインへのpingが届かなかったのも同様の理由のためであると思われる．
+演習室の環境ではhttp/httpsでしか外部と通信できないが，\verb|traceroute|ではオンラインマニュアルによるとICMPを使用しているため，ゲートウェイicsintgw.ics.es.osaka-u.ac.jpで通信が止められているものと考えられる．
+\ref{sec:ping}節でyahoo.comなどの適当なドメインへの\verb|ping|が届かなかったのも同様の理由のためであると思われる．
 
 \subsection{演習室のネットワーク構成}
-前節までの結果より，演習室のネットワーク構成は以下の図のようになっていると思われる．
-
+前節までの結果より，演習室のネットワーク構成は以下の図\ref{fig:netstat}のようになっていると思われる．
+\begin{figure}[H]
+\centering
+ \includegraphics[scale=0.5]{netstat_cropped.pdf}
+ \caption{演習室のネットワーク構成の予想}
+ \label{fig:netstat}
+\end{figure}
 
 \subsection{netstatコマンド}
 \verb|netstat -r|を実行すると，以下のような出力が得られた．
@@ -96,6 +104,7 @@ default         192.168.16.254  0.0.0.0         UG        0 0          0 ens192
 link-local      *               255.255.0.0     U         0 0          0 ens192
 192.168.16.0    *               255.255.255.0   U         0 0          0 ens192
 \end{verbatim}
+
 オンラインマニュアルによると，\verb|netstat -r|コマンドでは，カーネルのルーティングテーブルを出力する．ルーティングテーブルとは，受け取ったパケットの宛先に応じて，次にどのノードにパケットを転送すればよいかを記録してあるものである．例えば，受け取ったパケットの宛先が133.1.17.66であれば，一番上の192.168.16.254に転送する．
 
 \subsection{再びarpコマンド}
@@ -166,7 +175,7 @@ $ strace -c echo hello
 strace ls 2>&1 1>/dev/null | grep open
 \end{verbatim}
 
-まず，オプションなしの\verb|strace|コマンドは呼び出されたシステムコールを逐一出力する．また，\verb|strace|コマンドの出力は調べる対象のコマンドの出力と被らないようにするためか標準エラー出力に出力されている．そのため標準エラー出力のみから``open''のある行を取り出している．このコマンドを実行すると，以下の出力が得られた．
+オプションなしの\verb|strace|コマンドは呼び出されたシステムコールを逐一出力する．また，\verb|strace|コマンドの出力は調べる対象のコマンドの出力と被らないようにするためか標準エラー出力に出力されている．そのため標準エラー出力のみから``open''のある行を取り出している．このコマンドを実行すると，以下の出力が得られた．
 
 \begin{verbatim}
 open("/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
@@ -189,7 +198,7 @@ open("/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
 open("/usr/lib/locale/locale-archive", O_RDONLY|O_CLOEXEC) = 3
 \end{verbatim}
 
-これらを比較すると，lsの方では使用しているライブラリが増えているほか，/proc/filesystemsなどファイルシステム関連の情報を参照していることがわかる．また，カレントディレクトリを開くのにもopenを使用している．
+これらを比較すると，\verb|ls|の方では使用しているライブラリが増えているほか，/proc/filesystemsなどファイルシステム関連の情報を参照していることがわかる．また，カレントディレクトリを開くのにもopenを使用している．
 
 また，``\verb|ping exp001|''では以下の出力が得られた．
 
@@ -230,7 +239,7 @@ ping: icmp open socket: Operation not permitted
 100.00    0.000000                   159        12 total
 \end{verbatim}
 
-echoの出力に比べ，socket(2)やconnect(2)などのネットワーク関連のシステムコールが加わっていることがわかる．
+\verb|echo|の出力に比べ，socket(2)やconnect(2)などのネットワーク関連のシステムコールが加わっていることがわかる．
 
 \section{発展課題}
 \subsection{ネットワーク関連のコマンド}
@@ -245,10 +254,56 @@ echoの出力に比べ，socket(2)やconnect(2)などのネットワーク関連
 \subsubsection{ftp}
 \verb|ftp|コマンドは，FTPサーバに接続しファイルのやり取りをするコマンドである．引数か起動後にopenコマンドでFTPサーバのアドレスを指定して接続する．しかしFTPサーバの所在が不明だったため使用できなかった．
 
-fingerコマンドおよびtalkコマンドは演習室の環境ではインストールされていないため使用できずマニュアルも表示できなかった．
+\verb|finger|コマンドおよび\verb|talk|コマンドは演習室の環境ではインストールされていないため使用できずマニュアルも表示できなかった．
 
 \subsection{hello100回}
+以下のプログラムを，コメントアウトを切り替えて実行し，\verb|strace -c|を用いてシステムコールの呼び出し回数を比較する．
+\begin{verbatim}
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#define COUNT 100
+int main(int ac, char* av[]){
+    int i;
+        // [下記 2 行の内、いずれかをコメントアウトする]
+        char message[] = "hello";
+        // char message[] = "hello\n";
+    for(i = 0; i < COUNT; i ++){
+        // [下記 2 行の内、いずれかをコメントアウトする]
+        fwrite(message, strlen(message), 1, stdout);
+        // write(0, message, strlen(message));
+    }
+    return 0;
+}
+\end{verbatim}
 
+以下の表\ref{table:strace}にそれぞれのプログラムでの\verb|strace|の出力を述べる．ただし，ここではシステムコールの回数であるcallsの部分のみ載せる．
 
+\begin{table}[H]
+  \begin{center}
+  \caption{straceの出力}
+  \label{table:strace}
+  \begin{tabular}{l|c|c|c|c}\hline
+  syscall & 改行なし,fwrite & 改行なし,write & 改行あり,fwrite & 改行あり,write \\ \hline \hline
+read & 1 & 1 & 1 & 1 \\ \hline
+write & 1 & 100 & 100 & 100 \\ \hline
+open & 2 & 2 & 2 & 2 \\ \hline
+close & 2 & 2 & 2 & 2 \\ \hline
+fstat & 3 & 2 & 3 & 2 \\ \hline
+mmap & 7 & 7 & 7 & 7 \\ \hline
+mprotect & 4 & 4 & 4 & 4 \\ \hline
+munmap & 1 & 1 & 1 & 1 \\ \hline
+brk & 3 & 1 & 3 & 1 \\ \hline
+access & 3 & 3 & 3 & 3 \\ \hline
+execve & 1 & 1 & 1 & 1 \\ \hline
+arch\_prctl & 1 & 1 & 1 & 1 \\ \hline
+  \end{tabular}
+  \end{center}
+\end{table}
+
+注目すべきは，改行なし,fwriteでのみwriteが1回しか呼ばれていない点である．改行あり,fwriteではwriteが100回呼ばれていることを踏まえると，fwriteでは改行を出力文字として受け取るまでは出力する文字はバッファリングしておき，改行を受け取るかファイルストリームが閉じられる時に出力すると考えられる．
+
+詳しく調べてみると，このバッファリングの方針はsetvbuf()関数で変更できることがわかった．そこで，この関数を追加し\_IONBF(バッファリングを一切しない)を設定すると，改行なし,fwriteでもwriteが100回呼び出されるようになった．
+
+この他の違い(fstatとbrkの数)はどちらもfwriteとwriteのどちらを使うかで異なっているので，fwriteの処理の一環として呼び出されていると思われる．
 \end{document}
-
