@@ -4,6 +4,7 @@
 #define COUNT 100
 int main(int ac, char* av[]){
 	int i;
+	setvbuf(stdout,NULL,_IONBF,0);
 	// [ 下記 2 行の内、いずれかをコメントアウトする ]
 	char message[] = "hello";
 	//char message[] = "hello\n";
