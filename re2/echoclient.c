@@ -39,7 +39,10 @@ int main(int argc,char *argv[]) {
 		exit(1);
 	}
 	bcopy(sp->h_addr,&svr.sin_addr,sp->h_length);
-	connect(sock,(struct sockaddr*)&svr,sizeof(svr));
+	if(connect(sock,(struct sockaddr*)&svr,sizeof(svr))==-1){
+		perror("connect");
+		exit(1);
+	}
 	fgets(rbuf,sizeof(rbuf),stdin);
 	write(sock,rbuf,strlen(rbuf));
 	while(read(sock,rbuf,sizeof(rbuf))<0){}
