@@ -8,6 +8,7 @@
 #include <stdlib.h>
 
 #define PORT 10150
+#define NAME_LEN 128
 
 int main(int argc,char *argv[]) {
 	int sock;
@@ -16,6 +17,14 @@ int main(int argc,char *argv[]) {
 	char rbuf[1024];
 	int nbytes;
 	int reuse;
+	char my_name[128],sname[128];
+
+	printf("Enter your name>");
+	fgets(my_name,sizeof(my_name),stdin);
+	for(int i=0;my_name[i]!='\0';i++){
+		if(my_name[i]=='\n')my_name[i]='\0';
+	}
+
 	/* ソケットの生成 */
 	if ((sock=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP))<0) {
 		perror("socket");
@@ -41,7 +50,13 @@ int main(int argc,char *argv[]) {
 		perror("connect");
 		exit(1);
 	}
-	printf("connected\n");
+
+	write(sock,my_name,strlen(my_name));
+	while((nbytes=read(sock,rbuf,sizeof(rbuf)))<0){}
+	rbuf[nbytes]='\0';
+	strcpy(sname,rbuf);
+
+	printf("connected with %s\n",sname);
 
 	for(;;){
 		fd_set rfds; /* select() で用いるファイル記述子集合 */
@@ -73,7 +88,8 @@ int main(int argc,char *argv[]) {
 				} else if(nbytes==0){
 					break;
 				} else {
-					write(1,rbuf,nbytes);
+					rbuf[nbytes]='\0';
+					printf("%s > %s",sname,rbuf);
 				}
 			}
 		}

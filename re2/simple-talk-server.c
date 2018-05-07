@@ -18,6 +18,13 @@ int main(int argc,char **argv) {
 	char rbuf[1024];
 	int nbytes;
 	int reuse;
+	char my_name[128],cname[128];
+
+	printf("Enter your name>");
+	fgets(my_name,sizeof(my_name),stdin);
+	for(int i=0;my_name[i]!='\0';i++){
+		if(my_name[i]=='\n')my_name[i]='\0';
+	}
 
 	/* ソケットの生成 */
 	if ((sock=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP))<0) {
@@ -58,6 +65,13 @@ int main(int argc,char **argv) {
 		cp = gethostbyaddr((char *)&clt.sin_addr,sizeof(struct in_addr),AF_INET);
 		printf("[%s]\n",cp->h_name);
 
+		write(csock,my_name,strlen(my_name));
+		while((nbytes=read(csock,rbuf,sizeof(rbuf)))<0){}
+		rbuf[nbytes]='\0';
+		strcpy(cname,rbuf);
+
+		printf("connected with %s\n",cname);
+
 		for(;;){
 			fd_set rfds; /* select() で用いるファイル記述子集合 */
 			struct timeval tv; /* select() が返ってくるまでの待ち時間を指定する変数 */
@@ -88,7 +102,8 @@ int main(int argc,char **argv) {
 					} else if(nbytes==0){
 						break;
 					} else {
-						write(1,rbuf,nbytes);
+						rbuf[nbytes]='\0';
+						printf("%s > %s",cname,rbuf);
 					}
 				}
 			}
