@@ -18,6 +18,11 @@ int main(int argc,char *argv[]) {
 	char rbuf[1024];
 	int nbytes;
 	int reuse;
+	
+	if (argc != 2) {
+		fprintf(stderr,"Usage: echoclient hostname\n");
+		exit(1);
+	}
 	/* ソケットの生成 */
 	if ((sock=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP))<0) {
 		perror("socket");
@@ -43,9 +48,12 @@ int main(int argc,char *argv[]) {
 		perror("connect");
 		exit(1);
 	}
-	fgets(rbuf,sizeof(rbuf),stdin);
-	write(sock,rbuf,strlen(rbuf));
-	while(read(sock,rbuf,sizeof(rbuf))<0){}
-	puts(rbuf);
+	
+	while(fgets(rbuf,sizeof(rbuf),stdin)>0){
+		write(sock,rbuf,strlen(rbuf));
+		while(read(sock,rbuf,sizeof(rbuf))<0){}
+		write(1,rbuf,strlen(rbuf));
+	}
+	
 	close(sock);
 }

@@ -18,6 +18,11 @@ int main(int argc,char *argv[]) {
 	int nbytes;
 	int reuse;
 	char my_name[128],sname[128];
+	
+	if (argc != 2) {
+		fprintf(stderr,"Usage: simple-talk-server hostname\n");
+		exit(1);
+	}
 
 	printf("Enter your name>");
 	fgets(my_name,sizeof(my_name),stdin);
@@ -59,22 +64,22 @@ int main(int argc,char *argv[]) {
 	printf("connected with %s\n",sname);
 
 	for(;;){
+		write(1,my_name,strlen(my_name));
+		write(1," > ",4);
 		fd_set rfds; /* select() で用いるファイル記述子集合 */
-		struct timeval tv; /* select() が返ってくるまでの待ち時間を指定する変数 */
 		/* 入力を監視するファイル記述子の集合を変数 rfds にセットする */
 		FD_ZERO(&rfds); /* rfds を空集合に初期化 */
 		FD_SET(0,&rfds); /* 標準入力 */
 		FD_SET(sock,&rfds); /* クライアントを受け付けたソケット */
 		/* 監視する待ち時間を 1 秒に設定 */
-		tv.tv_sec = 1;
-		tv.tv_usec = 0;
 		/* 標準入力とソケットからの受信を同時に監視する */
-		if(select(sock+1,&rfds,NULL,NULL,&tv)>0) {
+		if(select(sock+1,&rfds,NULL,NULL,NULL)>0) {
 			if(FD_ISSET(0,&rfds)) { /* 標準入力から入力があったなら */
 				/* 標準入力から読み込みクライアントに送信 */
 				if ( ( nbytes = read(0,rbuf,sizeof(rbuf)) ) < 0) {
 					perror("read");
 				} else if(nbytes==0){
+					printf("\e[1K\r");
 					break;
 				}else{
 					write(sock,rbuf,nbytes);
@@ -82,6 +87,7 @@ int main(int argc,char *argv[]) {
 			}
 
 			if(FD_ISSET(sock,&rfds)) { /* ソケットから受信したなら */
+				printf("\e[1K\r");
 				/* ソケットから読み込み端末に出力 */
 				if ( ( nbytes = read(sock,rbuf,sizeof(rbuf)) ) < 0) {
 					perror("read");
