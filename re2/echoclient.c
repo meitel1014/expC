@@ -48,6 +48,8 @@ int main(int argc,char *argv[]) {
 		perror("connect");
 		exit(1);
 	}
+
+	printf("connected with %s\n",argv[1]);
 	
 	while(fgets(rbuf,sizeof(rbuf),stdin)>0){
 		write(sock,rbuf,strlen(rbuf));

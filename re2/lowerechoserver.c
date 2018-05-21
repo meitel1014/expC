@@ -62,7 +62,7 @@ int main(int argc,char **argv) {
 		}
 		/* クライアントのホスト情報の取得 */
 		cp = gethostbyaddr((char *)&clt.sin_addr,sizeof(struct in_addr),AF_INET);
-		printf("[%s]\n",cp->h_name);
+		printf("connected with %s\n",cp->h_name);
 		do {
 			/* クライアントからのメッセージ受信 */
 			if ( ( nbytes = read(csock,rbuf,sizeof(rbuf)) ) < 0) {

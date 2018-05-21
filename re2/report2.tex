@@ -9,12 +9,49 @@
 担当教員\\
 小島 英春 助教授 \\
 内山 彰 助教授}
-\date{提出日: 2018年5月22日}
+\date{提出日: 2018年5月26日}
 
 \begin{document}
 \maketitle
 \section{課題2-1}
+\subsection{概要}
+この課題では，引数で与えられたホスト上で動作しているechoserverと通信し，標準入力から受け取った文字列をechoserverに送信し，echoserverから返された文字列をそのまま標準出力に表示するプログラムechoclientを作成する．echoserverとechoclientの通信にはTCPを用いる．
+
+\subsection{仕様}
+このプログラムの動作の流れは以下の通りである．
+\begin{enumerate}
+  \item 引数で与えられたホストで動作しているechoserverに接続する．
+  \item 標準入力からの入力を受け付ける．
+  \item 標準入力の内容がEOF(Ctrl-D)ならechoserverとの接続を切りプログラムを終了する．
+  \item 標準入力の内容をechoserverに送信する．
+  \item echoserverから返された文字列を表示する．
+  \item 2.に戻る．
+\end{enumerate}
+
+以降の節では，1.の接続と4.および5.のデータの送受信について実装内容を説明する．
+
+\subsection{接続の確立}
+\subsubsection{ソケットの生成}
+まず，通信の出入り口であるソケットを生成する．これには\verb|socket()|システムコールを用い，以下のように使用する．
+\begin{verbatim}
+sock=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP)
+\end{verbatim}
+第一引数には通信方法を決定するプロトコルファミリーを指定する．ここではIPv4を使用するため\verb|AF_INET|を指定している．第二引数にはソケットの型を指定する．このプログラムではTCPを使用し，TCPは通常全二重バイトストリームのため\verb|SOCK_STREAM|を指定する．第三引数ではプロトコルを指定するため，\verb|IPPROTO_TCP|を指定している．
+
+\subsubsection{接続先の設定}
+
+
+\subsection{文字列の送受信}
+
+
+\subsection{接続の切断}
+接続を終了するには\verb|close()|システムコールを用いる．
+
+\subsection{発展課題:lowerechoserver}
+発展課題として，echoserverを改造し，echoclientから送られた文字列のうち大文字を小文字にして返すlowerechoserverを作成した．
+
+具体的には，echoclientから受け取った文字列rbufに対し，大文字を小文字に変換する関数lowerを適用してからechoclientに送り返すようにした．
 
 \section{課題2-2}
-
+\subsection{発展課題:発言者の名前表示}
 \end{document}
