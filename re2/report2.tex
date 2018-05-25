@@ -33,9 +33,11 @@
 \subsection{接続の確立}
 \subsubsection{ソケットの生成}
 まず，通信の出入り口であるソケットを生成する．これには\verb|socket()|システムコールを用い，以下のように使用する．
+
 \begin{verbatim}
 sock=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP)
 \end{verbatim}
+
 第一引数には通信方法を決定するプロトコルファミリーを指定する．ここではIPv4を使用するため\verb|AF_INET|を指定している．第二引数にはソケットの型を指定する．このプログラムではTCPを使用し，TCPは通常全二重バイトストリームのため\verb|SOCK_STREAM|を指定する．第三引数ではプロトコルを指定するため，\verb|IPPROTO_TCP|を指定している．
 
 \subsubsection{接続先の設定}
