@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define PORT 10150
+#define PORT 10130
 
 int main(int argc,char **argv) {
 	int sock,csock;
