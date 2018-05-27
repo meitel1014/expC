@@ -126,10 +126,10 @@ simple-talk-serverへの接続を行う部分は，echoclientと同様に，
 ここでは，それぞれのプログラムの起動時に名前を入力させ，接続確立時にお互いに名前を送信し，``(名前) $>$ (入力内容)''のように会話の内容を表示するようにした．
 
 なお，標準入力の入力待ちの間は，シェルのプロンプトのように，``(自分の名前) $>$ ''と表示するが，このときにソケットからの入力を感知したら，エスケープシーケンス\verb|\e[1K|で``(自分の名前) $>$ ''を端末の表示から削除し，\verb|\r|でカーソルを行頭に戻してから``(相手の名前) $>$ (相手の入力内容)''と表示するようにした．
-
-\subsection{実行結果}
-simple-talk-serverを実行した端末からの出力は以下のようになった．
-\begin{verbatim}
+	
+	\subsection{実行結果}
+	simple-talk-serverを実行した端末からの出力は以下のようになった．
+	\begin{verbatim}
 $ ./simple-talk-server
 Enter your name>SVR
 [exp025.exp.ics.es.osaka-u.ac.jp]
@@ -140,10 +140,10 @@ SVR > Hey
 SVR > 日本語
 CLT > !"#$
 closed
-\end{verbatim}
-
-一方，これと通信したsimple-talk-clientからの出力は以下である．
-\begin{verbatim}
+	\end{verbatim}
+	
+	一方，これと通信したsimple-talk-clientからの出力は以下である．
+	\begin{verbatim}
 $ ./simple-talk-client exp101
 Enter your name>CLT
 connected with SVR
@@ -154,12 +154,12 @@ SVR > 日本語
 CLT > !"#$
 closed
 $
-\end{verbatim}
-
-\section{考察}
-発展課題としてlowerechoserverを作成したが，単純に各バイトが大文字の範囲であれば小文字に変換するという実装のため，文字コードによっては，日本語等のマルチバイト文字に対し特定のバイトを大文字と認識し不本意な変換を行ってしまう可能性があると考えられる．
-
-\section{感想}
-この課題を通して，ネットワークの接続時に実際に動作しているシステムコールを直に知ることができた．
-
+	\end{verbatim}
+	
+	\section{考察}
+	発展課題としてlowerechoserverを作成したが，単純に各バイトが大文字の範囲であれば小文字に変換するという実装のため，文字コードによっては，日本語等のマルチバイト文字に対し特定のバイトを大文字と認識し不本意な変換を行ってしまう可能性があると考えられる．
+	
+	\section{感想}
+	この課題を通して，ネットワークの接続時に実際に動作しているシステムコールを直に知ることができた．
+	
 \end{document}
