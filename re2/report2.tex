@@ -9,23 +9,23 @@
 担当教員\\
 小島 英春 助教授 \\
 内山 彰 助教授}
-\date{提出日: 2018年5月26日}
+\date{提出日: 2018年5月28日}
 
 \begin{document}
 \maketitle
 \section{課題2-1}
 \subsection{概要}
-この課題では，引数で与えられたホスト上で動作しているechoserverと通信し，標準入力から受け取った文字列をechoserverに送信し，echoserverから返された文字列をそのまま標準出力に表示するプログラムechoclientを作成する．echoserverとechoclientの通信にはTCPを用いる．
+この課題では，引数で与えられたホスト名のホスト上で動作しているechoserverと通信し，標準入力から受け取った文字列をechoserverに送信し，echoserverから返された文字列をそのまま標準出力に表示するプログラムechoclientを作成する．echoserverとechoclientの通信にはTCPを用いる．
 
 \subsection{仕様}
 このプログラムの動作の流れは以下の通りである．
 \begin{enumerate}
-  \item 引数で与えられたホストで動作しているechoserverに接続する．
-  \item 標準入力からの入力を受け付ける．
-  \item 標準入力の内容がEOF(Ctrl-D)ならechoserverとの接続を切りプログラムを終了する．
-  \item 標準入力の内容をechoserverに送信する．
-  \item echoserverから返された文字列を表示する．
-  \item 2.に戻る．
+	\item 引数で与えられたホストで動作しているechoserverに接続する．
+	\item 標準入力からの入力を受け付ける．
+	\item 標準入力の内容がEOF(Ctrl-D)ならechoserverとの接続を切りプログラムを終了する．
+	\item 標準入力の内容をechoserverに送信する．
+	\item echoserverから返された文字列を表示する．
+	\item 2.に戻る．
 \end{enumerate}
 
 以降の節では，1.の接続と4.および5.のデータの送受信について実装内容を説明する．
@@ -38,20 +38,128 @@ sock=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP)
 \end{verbatim}
 第一引数には通信方法を決定するプロトコルファミリーを指定する．ここではIPv4を使用するため\verb|AF_INET|を指定している．第二引数にはソケットの型を指定する．このプログラムではTCPを使用し，TCPは通常全二重バイトストリームのため\verb|SOCK_STREAM|を指定する．第三引数ではプロトコルを指定するため，\verb|IPPROTO_TCP|を指定している．
 
-\subsubsection{接続先の設定}
+なお，この後の\verb|setsockopt()|はソケットを再利用するためのおまじないであり，ここでは解説しない．
 
+\subsubsection{接続先の設定}
+次に，接続先を設定し実際に接続を行う．ここではまず，ソケットの接続先の情報を格納する変数\verb|svr|に対し，メンバ\verb|sin_family|に\verb|AF_INET|(IPv4を使用する)を設定し，メンバ\verb|sin_port|に使用するポート番号を設定する．ただし，これに設定する値はネットワーク上で使用するバイトオーダーで記述しなければならないため，\verb|htons()|関数でバイトオーダーを変更している．最後に，\verb|gethostbyname()|関数で取得できる接続先ホストのIPアドレスを\verb|sin_addr|メンバに設定する．
+
+最後にここまでに設定した情報をもとに接続を行う．これには\verb|connect()|システムコールを用いる．
 
 \subsection{文字列の送受信}
-
+接続が完了したら，変数\verb|sock|をファイルディスクリプタとして\verb|read()|および\verb|write()|システムコールを用いてソケットへの読み書きを行う．
 
 \subsection{接続の切断}
 接続を終了するには\verb|close()|システムコールを用いる．
+
+\subsection{実行結果}
+キーボードからの入力には頭に\verb|>|をつけてある．実際の実行時には表示されない．
+
+\begin{verbatim}
+$ ./echoclient exp101
+connected with exp101
+>hello
+hello
+>AiUeO
+AiUeO
+>にほんごニホンゴ日本語
+にほんごニホンゴ日本語
+>!"#$%&'(),./\
+!"#$%&'(),./\
+(Ctrl-Dを入力)$
+\end{verbatim}
 
 \subsection{発展課題:lowerechoserver}
 発展課題として，echoserverを改造し，echoclientから送られた文字列のうち大文字を小文字にして返すlowerechoserverを作成した．
 
 具体的には，echoclientから受け取った文字列rbufに対し，大文字を小文字に変換する関数lowerを適用してからechoclientに送り返すようにした．
 
+\subsubsection{実行結果}
+\begin{verbatim}
+$ ./echoclient exp101
+connected with exp101
+>hello
+hello
+>AiUeO
+aiueo
+>にほんごニホンゴ日本語
+にほんごニホンゴ日本語
+>!"#$%&'(),./\
+!"#$%&'(),./\
+(Ctrl-Dを入力)$
+\end{verbatim}
+
 \section{課題2-2}
+\subsection{概要}
+この課題では，一方の端末に入力された文字列を他方の端末に送信して表示するプログラムsimple-talk-serverとsimple-talk-clientを作成する．このうちserverは\verb|listen()|で接続要求を待つ側，clientは\verb|connect()|で接続要求を発する側とする．
+
+\subsection{simple-talk-server}
+\subsubsection{接続の確立}
+simple-talk-clientからの接続を待機するまでの部分は，echoserverと同様に，
+\begin{enumerate}
+	\item \verb|socket()|でソケットを生成する．
+	\item 接続先情報を設定する．
+	\item ソケットにアドレスを\verb|bind()|する．
+	\item \verb|listen()|で接続待ちの数を指定する．
+	\item \verb|accept()|でクライアントからの接続を待機する．
+\end{enumerate}
+の手順で行う．
+
+\subsubsection{文字列の送受信}
+文字列の送受信にはechoserverおよびechoclientと同様にソケットを介して行うが，これらと異なる点は，ソケットと標準入力の両方の入力を同時に受け付けなければならない点である．
+
+これを実現するために\verb|select()|システムコールを用いる．これは，\verb|fd_set|型の変数に登録したファイルディスクリプタを同時に監視する関数である．ここでは，標準入力である0と\verb|socket()|で生成したソケット\verb|sock|をマクロ\verb|FD_SET|で登録し，\verb|select()|でこれらを監視し，標準入力からの入力であればソケットにそれを書き込み，ソケットからの入力であればそれを標準出力に出力する．
+
+\subsection{simple-talk-client}
+simple-talk-serverへの接続を行う部分は，echoclientと同様に，
+\begin{enumerate}
+	\item \verb|socket()|でソケットを生成する．
+	\item 接続先情報を設定する．
+	\item \verb|connect()|で接続を行う．
+\end{enumerate}
+の手順で行う．
+
+また，文字列の送受信にはsimple-talk-serverと同様に\verb|select()|システムコールを用いた．
+
 \subsection{発展課題:発言者の名前表示}
+発展課題として，simple-talk-serverとsimple-talk-clientに，接続時に名前を入力し，発言時に発言者の名前を表示するという拡張を行った．
+
+ここでは，それぞれのプログラムの起動時に名前を入力させ，接続確立時にお互いに名前を送信し，``(名前) $>$ (入力内容)''のように会話の内容を表示するようにした．
+
+なお，標準入力の入力待ちの間は，シェルのプロンプトのように，``(自分の名前) $>$ ''と表示するが，このときにソケットからの入力を感知したら，エスケープシーケンス\verb|\e[1K|で``(自分の名前) $>$ ''を端末の表示から削除し，\verb|\r|でカーソルを行頭に戻してから``(相手の名前) $>$ (相手の入力内容)''と表示するようにした．
+
+\subsection{実行結果}
+simple-talk-serverを実行した端末からの出力は以下のようになった．
+\begin{verbatim}
+$ ./simple-talk-server
+Enter your name>SVR
+[exp025.exp.ics.es.osaka-u.ac.jp]
+connected with CLT
+CLT > hello
+CLT > AiUeO
+SVR > Hey
+SVR > 日本語
+CLT > !"#$
+closed
+\end{verbatim}
+
+一方，これと通信したsimple-talk-clientからの出力は以下である．
+\begin{verbatim}
+$ ./simple-talk-client exp101
+Enter your name>CLT
+connected with SVR
+CLT > hello
+CLT > AiUeO
+SVR > Hey
+SVR > 日本語
+CLT > !"#$
+closed
+$
+\end{verbatim}
+
+\section{考察}
+発展課題としてlowerechoserverを作成したが，単純に各バイトが大文字の範囲であれば小文字に変換するという実装のため，文字コードによっては，日本語等のマルチバイト文字に対し特定のバイトを大文字と認識し不本意な変換を行ってしまう可能性があると考えられる．
+
+\section{感想}
+この課題を通して，ネットワークの接続時に実際に動作しているシステムコールを直に知ることができた．
+
 \end{document}

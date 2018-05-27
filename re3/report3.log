@@ -1,9 +1,9 @@
-This is e-pTeX, Version 3.14159265-p3.7-160201-2.6 (utf8.sjis) (TeX Live 2016/W32TeX) (preloaded format=platex 2017.1.7)  28 MAY 2018 01:01
+This is e-pTeX, Version 3.14159265-p3.7-160201-2.6 (utf8.sjis) (TeX Live 2016/W32TeX) (preloaded format=platex 2017.1.7)  27 MAY 2018 15:42
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**c:/cygwin64/home/MEITEL/expC/re2/report2.tex
-(c:/cygwin64/home/MEITEL/expC/re2/report2.tex
+**c:/cygwin64/home/MEITEL/expC/re3/report3.tex
+(c:/cygwin64/home/MEITEL/expC/re3/report3.tex
 pLaTeX2e <2016/11/29> (based on LaTeX2e <2016/03/31> patch level 3)
 Babel <3.9r> and hyphenation patterns for 83 language(s) loaded.
 (c:/texlive/2016/texmf-dist/tex/platex/jsclasses/jsarticle.cls
@@ -77,8 +77,8 @@ File: dvipdfmx.def 2016/07/11 v4.12 LaTeX color/graphics driver for dvipdfmx (L
 \Gin@req@height=\dimen126
 \Gin@req@width=\dimen127
 )
-(./report2.aux)
-\openout1 = `report2.aux'.
+(./report3.aux)
+\openout1 = `report3.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 14.
 LaTeX Font Info:    ... okay on input line 14.
@@ -127,39 +127,14 @@ LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <14.4> not available
 (Font)              Font shape `JY1/gt/m/n' tried instead on input line 16.
 LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
 (Font)              scaled to size 13.83836pt on input line 16.
-LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <12> not available
-(Font)              Font shape `JT1/gt/m/n' tried instead on input line 17.
-LaTeX Font Info:    Font shape `JT1/gt/m/n' will be
-(Font)              scaled to size 11.53198pt on input line 17.
-LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <12> not available
-(Font)              Font shape `JY1/gt/m/n' tried instead on input line 17.
-LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
-(Font)              scaled to size 11.53198pt on input line 17.
-LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <10> not available
-(Font)              Font shape `JT1/gt/m/n' tried instead on input line 34.
-LaTeX Font Info:    Font shape `JT1/gt/m/n' will be
-(Font)              scaled to size 9.60999pt on input line 34.
-LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <10> not available
-(Font)              Font shape `JY1/gt/m/n' tried instead on input line 34.
-LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
-(Font)              scaled to size 9.60999pt on input line 34.
- [1] [2] [3]
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 126.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 126.
-LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
-(Font)              scaled to size 6.72699pt on input line 126.
-LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
-(Font)              scaled to size 4.805pt on input line 126.
- [4] [5] (./report2.aux) ) 
+ [1] (./report3.aux) ) 
 Here is how much of TeX's memory you used:
- 833 strings out of 493683
- 9786 string characters out of 6152643
- 70710 words of memory out of 5000000
- 4447 multiletter control sequences out of 15000+600000
- 14458 words of font info for 65 fonts, out of 8000000 for 9000
+ 822 strings out of 493683
+ 9645 string characters out of 6152643
+ 67710 words of memory out of 5000000
+ 4438 multiletter control sequences out of 15000+600000
+ 12929 words of font info for 56 fonts, out of 8000000 for 9000
  934 hyphenation exceptions out of 8191
- 25i,6n,21p,536b,321s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 25i,6n,21p,252b,230s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on report2.dvi (6 pages, 12120 bytes).
+Output written on report3.dvi (2 pages, 1156 bytes).
