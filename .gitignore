@@ -1,4 +1,7 @@
 *
 !*/
 !*.*
+*.aux
+*.synctex.gz
+*.dvi
 
