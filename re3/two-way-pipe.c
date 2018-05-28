@@ -13,6 +13,8 @@ int main(int argc, char *argv[]){
 		printf("bad argument.\n");
 		exit(1);
 	}
+	setbuf(stdout,NULL);
+
 	if(pipe(ptoc) == -1){
 		perror("pipe failed.");
 		exit(1);
@@ -37,9 +39,7 @@ int main(int argc, char *argv[]){
 			perror("pipe read.");
 			exit(1);
 		}
-		printf("message from parent process: \n");
-		printf("\t%s\n", buf);
-
+		printf("message from parent process: \n\t%s\n",buf);
 		exit(0);
 	}else{ /* Parent process */
 		close(ptoc[0]);
@@ -53,8 +53,7 @@ int main(int argc, char *argv[]){
 			perror("pipe read.");
 			exit(1);
 		}
-		printf("message from child process: \n");
-		printf("\t%s\n", buf);
+		printf("message from child process: \n\t%s\n",buf);
 		wait(&status);
 	}
 }
