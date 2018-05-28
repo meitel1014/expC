@@ -34,69 +34,82 @@ void merge(int numbers[], int temp[], int left, int mid, int right);
 int numbers[NUM_ITEMS];
 int temp[NUM_ITEMS];
 
-int main(){
-	int pid,status,fd[2],buf[NUM_ITEMS/2],check=-1;
+int main()
+{
+	int pid, status, fd[2], buf[NUM_ITEMS / 2], check = -1;
 
 	//seed random number generator
 	srand(getpid());
 
 	//fill array with random integers
-	for(int i = 0; i < NUM_ITEMS; i++)
+	for (int i = 0; i < NUM_ITEMS; i++)
 		numbers[i] = rand();
 
-	if(pipe(fd) == -1){
-		perror("pipe failed.");
+	if (pipe(fd) == -1)
+	{
+		perror("pipe");
 		exit(1);
 	}
-	if((pid = fork()) == -1){
-		perror("fork failed.");
+	if ((pid = fork()) == -1)
+	{
+		perror("fork");
 		exit(1);
 	}
-	if(pid == 0){ /* Child process */
+	if (pid == 0)
+	{ /* Child process */
 		close(fd[0]);
-		
-		mergeSort(numbers, temp, NUM_ITEMS/2);
 
-		if(write(fd[1], numbers,NUM_ITEMS/2*sizeof(int)) == -1){
-			perror("pipe write.");
+		mergeSort(numbers, temp, NUM_ITEMS / 2);
+
+		if (write(fd[1], numbers, NUM_ITEMS / 2 * sizeof(int)) == -1)
+		{
+			perror("pipe write");
 			exit(1);
 		}
 		exit(0);
-	}else{ /* Parent process */
+	}
+	else
+	{ /* Parent process */
 		close(fd[1]);
-		
-		mergeSort(numbers+NUM_ITEMS/2, temp, NUM_ITEMS-NUM_ITEMS/2);
 
-		if(read(fd[0], buf, NUM_ITEMS/2*sizeof(int)) == -1){
-			perror("pipe read.");
+		mergeSort(numbers + NUM_ITEMS / 2, temp, NUM_ITEMS - NUM_ITEMS / 2);
+
+		if (read(fd[0], buf, NUM_ITEMS / 2 * sizeof(int)) == -1)
+		{
+			perror("pipe read");
 			exit(1);
 		}
-		memcpy(numbers,buf,NUM_ITEMS/2*sizeof(int));
+		memcpy(numbers, buf, NUM_ITEMS / 2 * sizeof(int));
 		wait(&status);
 	}
 
-	merge(numbers,temp,0,NUM_ITEMS/2,NUM_ITEMS-1);
+	merge(numbers, temp, 0, NUM_ITEMS / 2, NUM_ITEMS - 1);
 
 	printf("Done with sort.\n");
 
-	for(int i = 0; i < NUM_ITEMS; i++){
-		if(numbers[i]<check){
+	for (int i = 0; i < NUM_ITEMS; i++)
+	{
+		if (numbers[i] < check)
+		{
 			printf("error");
 		}
-		check=numbers[i];
+		check = numbers[i];
 		printf("%i\n", numbers[i]);
 	}
 	return 0;
 }
 
-void mergeSort(int numbers[], int temp[], int array_size){
+void mergeSort(int numbers[], int temp[], int array_size)
+{
 	m_sort(numbers, temp, 0, array_size - 1);
 }
 
-void m_sort(int numbers[], int temp[], int left, int right){
+void m_sort(int numbers[], int temp[], int left, int right)
+{
 	int mid;
 
-	if(right > left){
+	if (right > left)
+	{
 		mid = (right + left) / 2;
 		m_sort(numbers, temp, left, mid);
 		m_sort(numbers, temp, mid + 1, right);
@@ -105,37 +118,45 @@ void m_sort(int numbers[], int temp[], int left, int right){
 	}
 }
 
-void merge(int numbers[], int temp[], int left, int mid, int right){
+void merge(int numbers[], int temp[], int left, int mid, int right)
+{
 	int i, left_end, num_elements, tmp_pos;
 
 	left_end = mid - 1;
 	tmp_pos = left;
 	num_elements = right - left + 1;
 
-	while((left <= left_end) && (mid <= right)){
-		if(numbers[left] <= numbers[mid]){
+	while ((left <= left_end) && (mid <= right))
+	{
+		if (numbers[left] <= numbers[mid])
+		{
 			temp[tmp_pos] = numbers[left];
 			tmp_pos = tmp_pos + 1;
 			left = left + 1;
-		}else{
+		}
+		else
+		{
 			temp[tmp_pos] = numbers[mid];
 			tmp_pos = tmp_pos + 1;
 			mid = mid + 1;
 		}
 	}
 
-	while(left <= left_end){
+	while (left <= left_end)
+	{
 		temp[tmp_pos] = numbers[left];
 		left = left + 1;
 		tmp_pos = tmp_pos + 1;
 	}
-	while(mid <= right){
+	while (mid <= right)
+	{
 		temp[tmp_pos] = numbers[mid];
 		mid = mid + 1;
 		tmp_pos = tmp_pos + 1;
 	}
 
-	for(i = 0; i <= num_elements; i++){
+	for (i = 0; i <= num_elements; i++)
+	{
 		numbers[right] = temp[right];
 		right = right - 1;
 	}
