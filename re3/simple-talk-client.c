@@ -7,9 +7,11 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
 
 #define PORT 10130
 #define NAME_LEN 128
+#define TIMEOUT 10
 
 void myalarm(int sec);
 void timeout(int);
@@ -112,7 +114,7 @@ int main(int argc, char *argv[]){
 		}else{
 			if(errno == EINTR){
 				close(sock);
-				printf("connection timed out.\n");
+				printf("\e[1K\rconnection timed out.\n");
 				exit(0);
 			}
 		}

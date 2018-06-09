@@ -62,7 +62,6 @@ int main(void)
 				perror("sem_signal");
 				exit(1);
 			}
-			exit(0);
 		}
 	}
 	else
@@ -80,7 +79,6 @@ int main(void)
 				perror("sem_signal");
 				exit(1);
 			}
-			exit(0);
 		}
 	}
 }
