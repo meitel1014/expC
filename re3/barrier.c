@@ -44,8 +44,7 @@ int main(int argc,char *argv[]){
 		}
 		if(pid == 0){ /* Child process */
 			sleep(getpid()%5);
-			sprintf(msg,"Child process %d ended\n",getpid());
-			write(1,msg,strlen(msg));
+			printf("Child process %d ended\n",getpid());
 			
 			if(semop(sid,&sigsem,1)==-1){
 				perror("sem_signal");
@@ -60,8 +59,7 @@ int main(int argc,char *argv[]){
 		exit(1);
 	}
 	
-	sprintf(msg,"All child processes ended\n");
-	write(1,msg,strlen(msg));
+	printf("All child processes ended\n");
 	
 	for(int i = 0; i < procs; i++){
 		wait(&status);

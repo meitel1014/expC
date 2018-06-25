@@ -14,8 +14,133 @@
 \begin{document}
 \maketitle
 \section{課題3-1}
+
+\subsection{改造内容}
+元々のプログラムでは，プロセスを4回forkし，それぞれの子プロセスでcounterファイルを開いてそれに書いてある数字を読み取り，1を足して書き込む，という操作を行う．ただし元々のプログラムのままでは，プロセス間の同期が取れていないために，あるプロセスがcounterファイルを読み込んで書き込むまでに，違うプロセスがcounterファイルを読み取ってしまうことがある．その結果，プログラム終了時のcounterファイルの内容は，本来は4を想定しているにもかかわらず，実際には2や3になっている．
+
+これを修正し排他制御を実現するために，セマフォという同期システムを用いる．セマフォには0以上の整数を保存し，これに対しwaitとsignalという操作が可能である．waitをすると，セマフォの値が1以上であれば減らし，0ならば実行待ちキューにwait操作をしたプロセスをプッシュする．一方signalを行うと，実行待ちキューにプロセスがあればプロセスを一つポップしてそのプロセスの実行を再開し，なければセマフォの値を増やす．
+
+file-counter中でのセマフォの使用方法について述べる．各子プロセスの処理内容は以下の通りである．
+\begin{enumerate}
+  \item wait
+  \item counterファイルを読み取り1加えた値を書き込む(count1)
+  \item signal
+  \item 子プロセス終了
+\end{enumerate}
+
+セマフォの初期値は1に設定してあるため，子プロセスを4つforkした後，最初に実行される子プロセスはwaitでセマフォの値を0にして処理を継続する．その他の子プロセスがwaitする時にはセマフォの値は0になっているから，処理を一時停止し実行待ちキューに格納される．最初の子プロセスのcount1の実行が終わりsignalを行うと，実行待ちキュー内の子プロセスが一つ再開される．このとき最初の子プロセスのcount1はすでに終了しているため，ファイルcounterの値は1になっている．これを繰り返すと，それぞれの子プロセスは前の子プロセスのcount1の終了を待って自分のcount1を行うことになるため，counterファイルの最終的な値は4になる．
+
+\subsection{実行結果}
+\begin{verbatim}
+$ ./file-counter
+count = 1
+count = 2
+count = 3
+count = 4
+$ ./file-counter
+count = 1
+count = 2
+count = 3
+count = 4
+$ ./file-counter
+count = 1
+count = 2
+count = 3
+count = 4
+\end{verbatim}
+
+プロセス間の同期がとれたことで，確実にcountの値が1ずつ増え，何度実行しても結果が変わらなくなった．
+
 \section{課題3-2-1}
+
+\subsection{改造内容}
+
+\subsection{実行結果}
+\begin{verbatim}
+$ ./two-way-pipe hello HELLO
+message from child process: 
+	hello
+message from parent process: 
+	HELLO
+\end{verbatim}
+
 \section{課題3-2-2}
+\begin{verbatim}
+$ ./pipemerge 
+Done with sort.
+52892392
+262577817
+627763308
+700818707
+868170278
+984698191
+1126456746
+1162516543
+1607248803
+1692208745
+\end{verbatim}
+
 \section{課題3-3-1}
 \section{課題3-3-2}
+
+\subsection{改造内容}
+simple-talk-clientでは標準入力とソケットを同時に監視するためselect()システムコールを用いているが，これの実行中にシグナルハンドラの割り込みが発生すると，selectはエラー扱いとなり，-1を返してerrnoをEINTRに設定する．よってこの状態になった時，ソケットをcloseしてプログラムを終了すればよい．
+
+\subsection{実行結果}
+\begin{verbatim}
+
+\end{verbatim}
+
+\section{発展課題1}
+\subsection{概要}
+この課題では，セマフォを利用して，すべてのプロセスが処理中のある時点までたどり着くまで他のプロセスは待機するバリア同期を実装する．
+
+\subsection{仕様}
+このプログラムはまず，引数で与えられた数だけforkし子プロセスを作成する．各子プロセスは，自身のプロセスIDを5で割った余りの秒数だけsleepし，その後``Child process (pid) ended''を出力し終了する．親プロセスはすべての子プロセスが終了したのを確認してから，``All child processes ended''を出力して終了する．
+
+\subsection{実装方法}
+
+\subsection{実行結果}
+\begin{verbatim}
+$ ./barrier 10
+Child process 14975 ended
+Child process 14980 ended
+Child process 14976 ended
+Child process 14971 ended
+Child process 14977 ended
+Child process 14972 ended
+Child process 14978 ended
+Child process 14973 ended
+Child process 14979 ended
+Child process 14974 ended
+All child processes ended
+\end{verbatim}
+\section{発展課題3}
+\subsection{概要}
+この課題では，２プロセスが交互に動作するようなプログラムを作成する．ここでは，forkしたプロセスAとBが，あらかじめ作成した配列AとBの内容を交互に表示するプログラムを作成する．
+
+\subsection{仕様}
+セマフォが一つだと次にどちらのプロセスが実行されるか分からないためセマフォを2つ用いた．
+\subsection{実行結果}
+\begin{verbatim}
+$ ./rotation 
+A[0] = 2899
+B[0] = 6064
+A[1] = 4806
+B[1] = 5391
+A[2] = 8125
+B[2] = 9354
+A[3] = 3773
+B[3] = 6435
+A[4] = 8643
+B[4] = 1452
+(中略)
+B[96] = 2722
+A[97] = 5798
+B[97] = 8942
+A[98] = 5284
+B[98] = 6991
+A[99] = 1253
+B[99] = 991
+\end{verbatim}
 \end{document}

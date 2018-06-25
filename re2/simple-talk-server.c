@@ -100,6 +100,7 @@ int main(int argc,char **argv) {
 					if ( ( nbytes = read(csock,rbuf,sizeof(rbuf)) ) < 0) {
 						perror("read");
 					} else if(nbytes==0){
+						printf("client closed\n");
 						break;
 					} else {
 						rbuf[nbytes]='\0';
