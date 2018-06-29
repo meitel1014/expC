@@ -1,4 +1,4 @@
-This is e-pTeX, Version 3.14159265-p3.7-160201-2.6 (utf8.sjis) (TeX Live 2016/W32TeX) (preloaded format=platex 2017.1.7)  27 MAY 2018 15:42
+This is e-pTeX, Version 3.14159265-p3.7-160201-2.6 (utf8.sjis) (TeX Live 2016/W32TeX) (preloaded format=platex 2017.1.7)  21 JUN 2018 20:10
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -127,14 +127,26 @@ LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <14.4> not available
 (Font)              Font shape `JY1/gt/m/n' tried instead on input line 16.
 LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
 (Font)              scaled to size 13.83836pt on input line 16.
+LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <12> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 17.
+LaTeX Font Info:    Font shape `JT1/gt/m/n' will be
+(Font)              scaled to size 11.53198pt on input line 17.
+LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <12> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 17.
+LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
+(Font)              scaled to size 11.53198pt on input line 17.
+LaTeX Font Info:    Font shape `JT1/gt/m/n' will be
+(Font)              scaled to size 9.60999pt on input line 32.
+LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
+(Font)              scaled to size 9.60999pt on input line 32.
  [1] (./report3.aux) ) 
 Here is how much of TeX's memory you used:
- 822 strings out of 493683
- 9645 string characters out of 6152643
- 67710 words of memory out of 5000000
- 4438 multiletter control sequences out of 15000+600000
- 12929 words of font info for 56 fonts, out of 8000000 for 9000
+ 827 strings out of 493683
+ 9709 string characters out of 6152643
+ 68710 words of memory out of 5000000
+ 4442 multiletter control sequences out of 15000+600000
+ 13966 words of font info for 62 fonts, out of 8000000 for 9000
  934 hyphenation exceptions out of 8191
  25i,6n,21p,252b,230s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on report3.dvi (2 pages, 1156 bytes).
+Output written on report3.dvi (2 pages, 2564 bytes).
