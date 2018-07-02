@@ -10,25 +10,58 @@
 #define PORT 10140
 #define MAXCLIENTS 5
 
-int main(int argc,char **argv) {
-	int sock,csock;
+typedef struct socklist{
+	int csock;
+	char username[101];
+	struct socklist* next;
+}SOCKLIST;
+
+SOCKLIST* sockhead=NULL;
+int csocknum=0;
+
+SOCKLIST* add_sock(int csock){
+	SOCKLIST* new=malloc(sizeof(SOCKLIST));
+	new->csock=csock;
+	new->next=sockhead;
+	sockhead=new;
+	csocknum++;
+	return new;
+}
+
+int remove_sock(int csock){
+	SOCKLIST* tmp=sockhead;
+	SOCKLIST* prev=NULL;
+	while(tmp != NULL){
+		if(tmp->csock==csock){
+			prev->next=tmp->next;
+			free(tmp);
+			csocknum--;
+			return 0;
+		}
+		prev = tmp;
+		tmp = tmp->next;
+	}
+	
+	return -1;
+}
+
+int main(int argc,char *argv[]) {
+	int sock;
 	struct sockaddr_in svr;
 	struct sockaddr_in clt;
 	struct hostent *cp;
 	int clen;
 	char rbuf[1024];
 	int nbytes;
-	int reuse;
-	char my_name[128],cname[128];
 
-//c1 (初期状態)
+//s1 (初期状態)
 	/* ソケットの生成 */
 	if ((sock=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP))<0) {
 		perror("socket");
 		exit(1);
 	}
 	/* ソケットアドレス再利用の指定 */
-	reuse=1;
+	int reuse=1;
 	if(setsockopt(sock,SOL_SOCKET,SO_REUSEADDR,&reuse,sizeof(reuse))<0) {
 		perror("setsockopt");
 		exit(1);
@@ -50,64 +83,78 @@ int main(int argc,char **argv) {
 		exit(1);
 	}
 	
-//c2 (入力待ち)
 	for(;;){
-		/* クライアントの受付 */
-		clen = sizeof(clt);
-		if ( ( csock = accept(sock,(struct sockaddr *)&clt,&clen) ) <0 ) {
-			perror("accept");
-			exit(1);
+//s2 (入力待ち)
+		fd_set rfds; /* select() で用いるファイル記述子集合 */
+		/* 入力を監視するファイル記述子の集合を変数 rfds にセットする */
+		FD_ZERO(&rfds); /* rfds を空集合に初期化 */
+		FD_SET(sock,&rfds); /* クライアントを受け付けるソケット */
+		SOCKLIST* tmp=sockhead;
+		while(tmp!=NULL){
+			FD_SET(tmp->csock,&rfds); /* クライアントを受け付けたソケット */
+			tmp=tmp->next;
 		}
-		/* クライアントのホスト情報の取得 */
-		cp = gethostbyaddr((char *)&clt.sin_addr,sizeof(struct in_addr),AF_INET);
-		printf("[%s]\n",cp->h_name);
-
-		write(csock,my_name,strlen(my_name));
-		while((nbytes=read(csock,rbuf,sizeof(rbuf)))<0){}
-		rbuf[nbytes]='\0';
-		strcpy(cname,rbuf);
-
-		printf("connected with %s\n",cname);
-
-		for(;;){
-			write(1,my_name,strlen(my_name));
-			write(1," > ",4);
-			fd_set rfds; /* select() で用いるファイル記述子集合 */
-			/* 入力を監視するファイル記述子の集合を変数 rfds にセットする */
-			FD_ZERO(&rfds); /* rfds を空集合に初期化 */
-			FD_SET(0,&rfds); /* 標準入力 */
-			FD_SET(csock,&rfds); /* クライアントを受け付けたソケット */
-			/* 標準入力とソケットからの受信を同時に監視する */
-			if(select(csock+1,&rfds,NULL,NULL,NULL)>0) {
-				if(FD_ISSET(0,&rfds)) { /* 標準入力から入力があったなら */
-					/* 標準入力から読み込みクライアントに送信 */
-					if ( ( nbytes = read(0,rbuf,sizeof(rbuf)) ) < 0) {
-						perror("read");
-					} else if(nbytes==0){
-						printf("\e[1K\r");
-						break;
-					}else{
-						write(csock,rbuf,nbytes);
-					}
+		/* ソケットからの受信を同時に監視する */
+		if(select(csocknum+1,&rfds,NULL,NULL,NULL)>0) {
+//s3 (入力処理)
+//s4 (参加受付)
+			if(FD_ISSET(sock,&rfds)){
+				/* クライアントの受付 */
+				
+				int csock;
+				clen = sizeof(clt);
+				if ((csock = accept(sock,(struct sockaddr*)&clt,&clen)) <0){
+					perror("accept");
+					exit(1);
 				}
-
-				if(FD_ISSET(csock,&rfds)) { /* ソケットから受信したなら */
+				if(csocknum>=MAXCLIENTS){
+					write(csock,"REQUEST REJECTED\n",17);
+					close(csock);
+					continue;
+				}
+				
+				write(csock,"REQUEST ACCEPTED\n",17);
+				SOCKLIST* newsock=add_sock(csock);
+				
+				/* クライアントのホスト情報の取得 */
+				cp = gethostbyaddr((char *)&clt.sin_addr,sizeof(struct in_addr),AF_INET);
+				printf("[%s]\n",cp->h_name);
+//s5 (ユーザ名登録)
+				nbytes=read(csock,rbuf,sizeof(rbuf));
+				rbuf[nbytes-1]='\0';
+				SOCKLIST* tmp=sockhead;
+				while(tmp!=NULL){
+					if(strcmp(tmp->username,rbuf)==0){
+						write(csock,"USERNAME REJECTED\n",17);
+						close(csock);
+						remove_sock(csock);
+					}
+					tmp=tmp->next;
+				}
+				strcpy(newsock->username,rbuf);
+			}
+//s6 (メッセージ配信)
+			SOCKLIST* tmp=sockhead;
+			while(tmp!=NULL){
+				if(FD_ISSET(tmp->csock,&rfds)) { /* ソケットから受信したなら */
 					printf("\e[1K\r");
 					/* ソケットから読み込み端末に出力 */
-					if ( ( nbytes = read(csock,rbuf,sizeof(rbuf)) ) < 0) {
+					if ((nbytes = read(tmp->csock,rbuf,sizeof(rbuf))) < 0){
 						perror("read");
-					} else if(nbytes==0){
+					}else if(nbytes==0){
 						printf("client closed\n");
 						break;
-					} else {
-						rbuf[nbytes]='\0';
-						printf("%s > %s",cname,rbuf);
+					}else{
+						SOCKLIST* tmp=sockhead;
+						while(tmp!=NULL){
+							write(tmp->csock,rbuf,nbytes);
+							tmp=tmp->next;
+						}
+						break;
 					}
 				}
+				tmp=tmp->next;
 			}
 		}
-
-		close(csock);
-		printf("closed\n");
 	}
 }
