@@ -1,81 +1,76 @@
-This is e-pTeX, Version 3.14159265-p3.7-160201-2.6 (utf8.sjis) (TeX Live 2016/W32TeX) (preloaded format=platex 2017.1.7)  1 JUL 2018 21:36
+This is e-pTeX, Version 3.14159265-p3.6-141210-2.6 (utf8.euc) (TeX Live 2015/Debian) (preloaded format=platex 2017.8.28)  2 JUL 2018 12:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**c:/cygwin64/home/MEITEL/expC/re3/report3.tex
-(c:/cygwin64/home/MEITEL/expC/re3/report3.tex
-pLaTeX2e <2016/11/29> (based on LaTeX2e <2016/03/31> patch level 3)
-Babel <3.9r> and hyphenation patterns for 83 language(s) loaded.
-(c:/texlive/2016/texmf-dist/tex/platex/jsclasses/jsarticle.cls
-Document Class: jsarticle 2016/12/13 okumura, texjporg
-\stockwidth=\dimen118
-\stockheight=\dimen119
-\jsc@mpt=\dimen120
-\jsc@mmm=\dimen121
-\jsc@smallskipamount=\skip41
-LaTeX Info: Redefining \rmfamily on input line 462.
-LaTeX Info: Redefining \sffamily on input line 465.
-LaTeX Info: Redefining \ttfamily on input line 468.
-LaTeX Info: Redefining \textmc on input line 471.
-LaTeX Info: Redefining \textgt on input line 473.
+**report3.tex
+(./report3.tex
+pLaTeX2e <2006/11/10> (based on LaTeX2e <2016/02/01> patch level 0)
+Babel <3.9n> and hyphenation patterns for 11 languages loaded.
+(/usr/share/texlive/texmf-dist/tex/platex/jsclasses/jsarticle.cls
+Document Class: jsarticle 2014/02/07 okumura
+LaTeX Info: Redefining \rmfamily on input line 352.
+LaTeX Info: Redefining \sffamily on input line 355.
+LaTeX Info: Redefining \ttfamily on input line 358.
 \symmincho=\mathgroup4
 LaTeX Font Info:    Overwriting symbol font `mincho' in version `bold'
-(Font)                  JY1/mc/m/n --> JY1/gt/m/n on input line 534.
+(Font)                  JY1/mc/m/n --> JY1/gt/m/n on input line 423.
 LaTeX Font Info:    Font shape `JT1/mc/m/n' will be
-(Font)              scaled to size 9.60999pt on input line 725.
+(Font)              scaled to size 9.60999pt on input line 613.
 LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
-(Font)              scaled to size 9.60999pt on input line 725.
-\fullwidth=\dimen122
+(Font)              scaled to size 9.60999pt on input line 613.
+\fullwidth=\dimen118
 LaTeX Font Info:    Font shape `JT1/mc/m/n' will be
-(Font)              scaled to size 7.68799pt on input line 877.
+(Font)              scaled to size 7.68799pt on input line 760.
 LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
-(Font)              scaled to size 7.68799pt on input line 877.
-\c@part=\count82
-\c@section=\count83
-\c@subsection=\count84
-\c@subsubsection=\count85
-\c@paragraph=\count86
-\c@subparagraph=\count87
+(Font)              scaled to size 7.68799pt on input line 760.
+\c@part=\count81
+\c@section=\count82
+\c@subsection=\count83
+\c@subsubsection=\count84
+\c@paragraph=\count85
+\c@subparagraph=\count86
 \@abstractbox=\box41
-\c@figure=\count88
-\c@table=\count89
-\abovecaptionskip=\skip42
-\belowcaptionskip=\skip43
-\jsc@tocl@width=\dimen123
-\@lnumwidth=\dimen124
-\bibindent=\dimen125
-(c:/texlive/2016/texmf-dist/tex/platex/jsclasses/jslogo.sty
-Package: jslogo 2016/07/14 okumura, texjporg
-LaTeX Info: Redefining \TeX on input line 94.
-LaTeX Info: Redefining \LaTeX on input line 147.
-LaTeX Info: Redefining \LaTeXe on input line 200.
-)
-\heisei=\count90
-)
-(c:/texlive/2016/texmf-dist/tex/latex/graphics/graphicx.sty
+\c@figure=\count87
+\c@table=\count88
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\js@tocl@width=\dimen119
+\@lnumwidth=\dimen120
+\bibindent=\dimen121
+LaTeX Info: Redefining \TeX on input line 1731.
+LaTeX Info: Redefining \LaTeX on input line 1757.
+LaTeX Info: Redefining \LaTeXe on input line 1782.
+\heisei=\count89
+) (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
 
-(c:/texlive/2016/texmf-dist/tex/latex/graphics/keyval.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks15
 )
-(c:/texlive/2016/texmf-dist/tex/latex/graphics/graphics.sty
-Package: graphics 2016/07/10 v1.0t Standard LaTeX Graphics (DPC,SPQR)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2016/01/03 v1.0q Standard LaTeX Graphics (DPC,SPQR)
 
-(c:/texlive/2016/texmf-dist/tex/latex/graphics/trig.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
 Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
 )
-(c:/texlive/2016/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
-File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/graphics.cfg
+File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
 )
-Package graphics Info: Driver file: dvipdfmx.def on input line 99.
+Package graphics Info: Driver file: dvipdfmx.def on input line 95.
 
-(c:/texlive/2016/texmf-dist/tex/latex/graphics-def/dvipdfmx.def
-File: dvipdfmx.def 2016/07/11 v4.12 LaTeX color/graphics driver for dvipdfmx (L
-3/ChoF)
-))
-\Gin@req@height=\dimen126
-\Gin@req@width=\dimen127
+(/usr/share/texlive/texmf-dist/tex/latex/dvipdfmx-def/dvipdfmx.def
+File: dvipdfmx.def 2015/11/04 v4.07 LaTeX color/graphics driver for dvipdfmx (T
+eX Live/ChoF)
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+)))
+\Gin@req@height=\dimen122
+\Gin@req@width=\dimen123
 )
 (./report3.aux)
 \openout1 = `report3.aux'.
@@ -139,32 +134,14 @@ LaTeX Font Info:    Font shape `JT1/gt/m/n' will be
 (Font)              scaled to size 9.60999pt on input line 18.
 LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
 (Font)              scaled to size 9.60999pt on input line 18.
- [1] [2] [3] [4] [5]
-
-! LaTeX Error: \verb ended by end of line.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.178 ...Aは配列Aを，プロセスBは配列Bを表示する．
-                                                 
-? 
-! Emergency stop.
- ...                                              
-                                                  
-l.178 ...Aは配列Aを，プロセスBは配列Bを表示する．
-                                                 
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
- 
+ [1] [2] [3] [4] [5] [6] [7] (./report3.aux) ) 
 Here is how much of TeX's memory you used:
- 826 strings out of 493683
- 9832 string characters out of 6152643
- 70710 words of memory out of 5000000
- 4442 multiletter control sequences out of 15000+600000
+ 938 strings out of 494865
+ 11432 string characters out of 6179769
+ 67116 words of memory out of 5000000
+ 4406 multiletter control sequences out of 15000+600000
  13966 words of font info for 62 fonts, out of 8000000 for 9000
- 934 hyphenation exceptions out of 8191
- 25i,6n,21p,897b,325s stack positions out of 5000i,500n,10000p,200000b,80000s
-Output written on report3.dvi (6 pages, 15480 bytes).
+ 269 hyphenation exceptions out of 8191
+ 27i,6n,21p,864b,323s stack positions out of 5000i,500n,10000p,200000b,80000s
+
+Output written on report3.dvi (8 pages, 19708 bytes).
