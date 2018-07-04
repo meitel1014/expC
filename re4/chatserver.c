@@ -33,9 +33,12 @@ int remove_sock(int csock){
 	SOCKLIST* prev=NULL;
 	while(tmp != NULL){
 		if(tmp->csock==csock){
-			prev->next=tmp->next;
+			if(prev!=NULL){
+				prev->next=tmp->next;
+			}
 			free(tmp);
 			csocknum--;
+			sockhead = prev;
 			return 0;
 		}
 		prev = tmp;
@@ -49,8 +52,6 @@ int main(int argc,char *argv[]) {
 	int sock;
 	struct sockaddr_in svr;
 	struct sockaddr_in clt;
-	struct hostent *cp;
-	int clen;
 	char rbuf[1024];
 	int nbytes;
 
@@ -85,6 +86,7 @@ int main(int argc,char *argv[]) {
 	
 	for(;;){
 //s2 (入力待ち)
+		int maxfd=sock;
 		fd_set rfds; /* select() で用いるファイル記述子集合 */
 		/* 入力を監視するファイル記述子の集合を変数 rfds にセットする */
 		FD_ZERO(&rfds); /* rfds を空集合に初期化 */
@@ -92,17 +94,19 @@ int main(int argc,char *argv[]) {
 		SOCKLIST* tmp=sockhead;
 		while(tmp!=NULL){
 			FD_SET(tmp->csock,&rfds); /* クライアントを受け付けたソケット */
+			if(tmp->csock>maxfd){
+				maxfd=tmp->csock;
+			}
 			tmp=tmp->next;
 		}
-		/* ソケットからの受信を同時に監視する */
-		if(select(csocknum+1,&rfds,NULL,NULL,NULL)>0) {
 //s3 (入力処理)
+		/* ソケットからの受信を同時に監視する */
+		if(select(maxfd+1,&rfds,NULL,NULL,NULL)>0) {
 //s4 (参加受付)
 			if(FD_ISSET(sock,&rfds)){
 				/* クライアントの受付 */
-				
 				int csock;
-				clen = sizeof(clt);
+				socklen_t clen = sizeof(clt);
 				if ((csock = accept(sock,(struct sockaddr*)&clt,&clen)) <0){
 					perror("accept");
 					exit(1);
@@ -115,10 +119,6 @@ int main(int argc,char *argv[]) {
 				
 				write(csock,"REQUEST ACCEPTED\n",17);
 				SOCKLIST* newsock=add_sock(csock);
-				
-				/* クライアントのホスト情報の取得 */
-				cp = gethostbyaddr((char *)&clt.sin_addr,sizeof(struct in_addr),AF_INET);
-				printf("[%s]\n",cp->h_name);
 //s5 (ユーザ名登録)
 				nbytes=read(csock,rbuf,sizeof(rbuf));
 				rbuf[nbytes-1]='\0';
@@ -126,35 +126,45 @@ int main(int argc,char *argv[]) {
 				while(tmp!=NULL){
 					if(strcmp(tmp->username,rbuf)==0){
 						write(csock,"USERNAME REJECTED\n",17);
+						printf("REJECTED:%s\n",rbuf);
 						close(csock);
 						remove_sock(csock);
+						break;
 					}
 					tmp=tmp->next;
 				}
 				strcpy(newsock->username,rbuf);
+				write(csock,"USERNAME REGISTERED\n",20);
+				printf("NEW USER:%s\n",newsock->username);
+				continue;
 			}
 //s6 (メッセージ配信)
-			SOCKLIST* tmp=sockhead;
-			while(tmp!=NULL){
-				if(FD_ISSET(tmp->csock,&rfds)) { /* ソケットから受信したなら */
+			SOCKLIST* msgsock=sockhead;
+			while(msgsock!=NULL){
+				if(FD_ISSET(msgsock->csock,&rfds)) { /* ソケットから受信したなら */
 					printf("\e[1K\r");
 					/* ソケットから読み込み端末に出力 */
-					if ((nbytes = read(tmp->csock,rbuf,sizeof(rbuf))) < 0){
+					if ((nbytes = read(msgsock->csock,rbuf,sizeof(rbuf))) < 0){
 						perror("read");
 					}else if(nbytes==0){
-						printf("client closed\n");
+						close(msgsock->csock);
+						printf("client %s closed\n",msgsock->username);
+						remove_sock(msgsock->csock);
 						break;
 					}else{
-						SOCKLIST* tmp=sockhead;
-						while(tmp!=NULL){
-							write(tmp->csock,rbuf,nbytes);
-							tmp=tmp->next;
+						char buf[1024];
+						rbuf[nbytes]='\0';
+						SOCKLIST* bsock=sockhead;
+						while(bsock!=NULL){
+							sprintf(buf,"%s >%s",msgsock->username,rbuf);
+							write(bsock->csock,buf,strlen(buf));
+							bsock=bsock->next;
 						}
-						break;
 					}
 				}
-				tmp=tmp->next;
+				msgsock=msgsock->next;
 			}
 		}
 	}
 }
+
