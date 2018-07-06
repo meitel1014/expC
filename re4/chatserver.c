@@ -36,12 +36,13 @@ int remove_sock(int csock) {
 	SOCKLIST* prev = NULL;
 	while(tmp != NULL) {
 		if(tmp->csock == csock) {
-			if(prev != NULL) {
+			if(prev == NULL) {
+				sockhead = tmp->next;
+			}else{
 				prev->next = tmp->next;
 			}
 			free(tmp);
 			csocknum--;
-			sockhead = prev;
 			return 0;
 		}
 		prev = tmp;
@@ -57,6 +58,9 @@ void broadcast(char* msg) {
 		write(bsock->csock, msg, strlen(msg));
 		bsock = bsock->next;
 	}
+}
+
+void interrupt(int sig){
 }
 
 void timeup(int sig) {
@@ -98,7 +102,7 @@ int main(int argc, char* argv[]) {
 		exit(1);
 	}
 
-	signal(SIGINT, SIG_IGN);
+	signal(SIGINT, interrupt);
 
 	for(;;) {
 		// s2 (入力待ち)
@@ -116,6 +120,7 @@ int main(int argc, char* argv[]) {
 			tmp = tmp->next;
 		}
 		// s3 (入力処理)
+S3:
 		/* ソケットからの受信を同時に監視する */
 		if(select(maxfd + 1, &rfds, NULL, NULL, NULL) > 0) {
 			// s4 (参加受付)
@@ -145,13 +150,16 @@ int main(int argc, char* argv[]) {
 						printf("REJECTED:%s\n", rbuf);
 						close(csock);
 						remove_sock(csock);
-						break;
+						goto S3;
 					}
 					tmp = tmp->next;
 				}
 				strcpy(newsock->username, rbuf);
 				write(csock, "USERNAME REGISTERED\n", 20);
 				printf("NEW USER:%s\n", newsock->username);
+				char buf[1024]="";
+				sprintf(buf,"Server >%s joined\n",newsock->username);
+				broadcast(buf);
 				continue;
 			}
 			// s6 (メッセージ配信)
@@ -172,20 +180,21 @@ int main(int argc, char* argv[]) {
 						remove_sock(msgsock->csock);
 
 						char buf[1024] = "";
-						sprintf(buf, "%s exited\n", closed_name);
+						sprintf(buf, "Server >%s exited\n", closed_name);
 						broadcast(buf);
 						break;
 					} else {
-						char buf[1024] = "";
+						char buf[1024]="";
 						rbuf[nbytes] = '\0';
 						if(strcmp(rbuf, "/list\n") == 0) {
+							strcpy(buf,"Server >user list:\n");
 							SOCKLIST* member = sockhead;
 							while(member != NULL) {
 								strcat(buf, member->username);
 								strcat(buf, "\n");
 								member = member->next;
 							}
-							broadcast(buf);
+							write(msgsock->csock, buf, strlen(buf));
 						} else if(strncmp(rbuf, "/send ", 6) == 0) {
 							char targetname[101], msg[1024];
 							sscanf("/send %s %s", targetname, msg);
@@ -209,20 +218,21 @@ int main(int argc, char* argv[]) {
 						break;
 					}
 				}
+				msgsock = msgsock->next;
 			}
-			msgsock = msgsock->next;
 		} else {
-			if(timeup) {
+			if(time_up) {
 				SOCKLIST* csock = sockhead;
 				while(csock != NULL) {
 					close(csock->csock);
+					csock=csock->next;
 				}
 				close(sock);
 				exit(0);
 			} else if(errno == EINTR) {
 				alarm(10);
 				signal(SIGALRM, timeup);
-
+				printf("\e[1K\rServer stopping...\n");
 				broadcast("Server >10 seconds remaining\n");
 			}
 		}

@@ -61,13 +61,15 @@ int main(int argc, char *argv[]) {
 	// c3 (ユーザ名登録)
 	char my_name[101];
 	strncpy(my_name, argv[2], 100);
-	my_name[strlen(my_name)] = '\n';
-	write(sock, my_name, strlen(my_name));
+	nbytes=strlen(my_name)+1;
+	my_name[nbytes-1] = '\n';
+	write(sock, my_name, nbytes);
 	nbytes = read(sock, rbuf, 20);
 	if(strncmp(rbuf, "USERNAME REGISTERED\n", 20) != 0) {
+		printf("USERNAME REJECTED\n");
 		goto C6;
 	}
-	puts("USERNAME REGISTERED");
+	printf("USERNAME REGISTERED\n");
 
 	// c4 (メッセージ送受信)
 	for(;;) {
@@ -87,7 +89,7 @@ int main(int argc, char *argv[]) {
 					printf("\e[1K\r");
 					break;
 				} else {
-					printf("\e[1A\e[2K\r");
+					printf("\e[1A\e[1K\r");
 					write(sock, rbuf, nbytes);
 				}
 			}
