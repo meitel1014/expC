@@ -86,16 +86,16 @@ int main(int argc, char* argv[]) {
 				if((nbytes = read(0, rbuf, sizeof(rbuf))) < 0) {
 					perror("read");
 				} else if(nbytes == 0) {
-					printf("\e[1K\r");
+					printf("\e[2K\r");
 					break;
 				} else {
-					printf("\e[1A\e[1K\r");
+					printf("\e[1A\e[2K\r");
 					write(sock, rbuf, nbytes);
 				}
 			}
 
 			if(FD_ISSET(sock, &rfds)) { /* ソケットから受信したなら */
-				printf("\e[1K\r");
+				printf("\e[2K\r");
 				/* ソケットから読み込み端末に出力 */
 				if((nbytes = read(sock, rbuf, sizeof(rbuf))) < 0) {
 					perror("read");

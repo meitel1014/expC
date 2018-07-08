@@ -197,12 +197,13 @@ int main(int argc, char* argv[]) {
 								member = member->next;
 							}
 							write(msgsock->csock, buf, strlen(buf));
-						} else if(strncmp(rbuf, "/send ", 6) == 0) {
-							char *targetname, msg;
+						} else if(strncmp(rbuf, "/send", 5) == 0) {
+							char* targetname;
+							char* msg;
 							strtok(rbuf, " ");  // sendを切り出し
-							if((targetname = strtok(rbuf, " ") == NULL)) {
+							if((targetname = strtok(NULL, " ")) == NULL) {
 								write(msgsock->csock,
-									  "Usage:/send username message\n", );
+									  "Server >Usage:/send username message\n", 36);
 								break;
 							}
 							// usernameのユーザを検索
@@ -214,11 +215,12 @@ int main(int argc, char* argv[]) {
 								target = target->next;
 							}
 							if(target == NULL) {
-								write(msgsock->csock, "No such user\n", 14);
+								sprintf(buf,"Server >%s:No such user online\n",targetname);
+								write(msgsock->csock, buf, strlen(buf));
 							} else {
-								if((msg = strtok(rbuf, " ") == NULL)) {
+								if((msg = strtok(NULL, " ")) == NULL) {
 									write(msgsock->csock,
-										  "Usage:/send username message\n", );
+										  "Server >Usage:/send username message\n", 36);
 									break;
 								}
 								sprintf(buf, "%s*>%s", msgsock->username, msg);
