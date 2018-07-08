@@ -38,7 +38,7 @@ int remove_sock(int csock) {
 		if(tmp->csock == csock) {
 			if(prev == NULL) {
 				sockhead = tmp->next;
-			}else{
+			} else {
 				prev->next = tmp->next;
 			}
 			free(tmp);
@@ -60,7 +60,7 @@ void broadcast(char* msg) {
 	}
 }
 
-void interrupt(int sig){
+void interrupt(int sig) {
 }
 
 void timeup(int sig) {
@@ -120,7 +120,7 @@ int main(int argc, char* argv[]) {
 			tmp = tmp->next;
 		}
 		// s3 (入力処理)
-S3:
+	S3:
 		/* ソケットからの受信を同時に監視する */
 		if(select(maxfd + 1, &rfds, NULL, NULL, NULL) > 0) {
 			// s4 (参加受付)
@@ -157,8 +157,9 @@ S3:
 				strcpy(newsock->username, rbuf);
 				write(csock, "USERNAME REGISTERED\n", 20);
 				printf("NEW USER:%s\n", newsock->username);
-				char buf[1024]="";
-				sprintf(buf,"Server >%s joined\n",newsock->username);
+				char buf[1024] = "";
+				sprintf(buf, "Server >%s joined:%d online\n", newsock->username,
+						csocknum);
 				broadcast(buf);
 				continue;
 			}
@@ -180,14 +181,15 @@ S3:
 						remove_sock(msgsock->csock);
 
 						char buf[1024] = "";
-						sprintf(buf, "Server >%s exited\n", closed_name);
+						sprintf(buf, "Server >%s exited:%d online\n",
+								closed_name, csocknum);
 						broadcast(buf);
 						break;
 					} else {
-						char buf[1024]="";
+						char buf[1024] = "";
 						rbuf[nbytes] = '\0';
 						if(strcmp(rbuf, "/list\n") == 0) {
-							strcpy(buf,"Server >user list:\n");
+							strcpy(buf, "Server >user list:\n");
 							SOCKLIST* member = sockhead;
 							while(member != NULL) {
 								strcat(buf, member->username);
@@ -196,8 +198,14 @@ S3:
 							}
 							write(msgsock->csock, buf, strlen(buf));
 						} else if(strncmp(rbuf, "/send ", 6) == 0) {
-							char targetname[101], msg[1024];
-							sscanf("/send %s %s", targetname, msg);
+							char *targetname, msg;
+							strtok(rbuf, " ");  // sendを切り出し
+							if((targetname = strtok(rbuf, " ") == NULL)) {
+								write(msgsock->csock,
+									  "Usage:/send username message\n", );
+								break;
+							}
+							// usernameのユーザを検索
 							SOCKLIST* target = sockhead;
 							while(target != NULL) {
 								if(strcmp(target->username, targetname) == 0) {
@@ -208,6 +216,11 @@ S3:
 							if(target == NULL) {
 								write(msgsock->csock, "No such user\n", 14);
 							} else {
+								if((msg = strtok(rbuf, " ") == NULL)) {
+									write(msgsock->csock,
+										  "Usage:/send username message\n", );
+									break;
+								}
 								sprintf(buf, "%s*>%s", msgsock->username, msg);
 								write(target->csock, buf, strlen(buf));
 							}
@@ -225,7 +238,7 @@ S3:
 				SOCKLIST* csock = sockhead;
 				while(csock != NULL) {
 					close(csock->csock);
-					csock=csock->next;
+					csock = csock->next;
 				}
 				close(sock);
 				exit(0);

@@ -11,10 +11,10 @@
 
 #define PORT 10140
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
 	int sock;
 	struct sockaddr_in svr;
-	struct hostent *sp;
+	struct hostent* sp;
 	char rbuf[1024];
 	int nbytes;
 
@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 	bcopy(sp->h_addr, &svr.sin_addr, sp->h_length);
-	if(connect(sock, (struct sockaddr *)&svr, sizeof(svr)) == -1) {
+	if(connect(sock, (struct sockaddr*)&svr, sizeof(svr)) == -1) {
 		perror("connect");
 		exit(1);
 	}
@@ -61,8 +61,8 @@ int main(int argc, char *argv[]) {
 	// c3 (ユーザ名登録)
 	char my_name[101];
 	strncpy(my_name, argv[2], 100);
-	nbytes=strlen(my_name)+1;
-	my_name[nbytes-1] = '\n';
+	nbytes = strlen(my_name) + 1;
+	my_name[nbytes - 1] = '\n';
 	write(sock, my_name, nbytes);
 	nbytes = read(sock, rbuf, 20);
 	if(strncmp(rbuf, "USERNAME REGISTERED\n", 20) != 0) {
