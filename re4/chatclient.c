@@ -89,7 +89,9 @@ int main(int argc, char* argv[]) {
 					printf("\e[2K\r");
 					break;
 				} else {
-					printf("\e[1A\e[2K\r");
+					if(strncmp(rbuf,"/send",5)!=0&&strncmp(rbuf,"/list",5)!=0){
+						printf("\e[1A\e[2K\r");
+					}
 					write(sock, rbuf, nbytes);
 				}
 			}

@@ -203,8 +203,8 @@ int main(int argc, char* argv[]) {
 							strtok(rbuf, " ");  // sendを切り出し
 							if((targetname = strtok(NULL, " ")) == NULL) {
 								write(msgsock->csock,
-									  "Server >Usage:/send username message\n", 36);
-								break;
+									  "Server >Usage:/send username message\n", 37);
+								continue;
 							}
 							// usernameのユーザを検索
 							SOCKLIST* target = sockhead;
@@ -220,7 +220,7 @@ int main(int argc, char* argv[]) {
 							} else {
 								if((msg = strtok(NULL, " ")) == NULL) {
 									write(msgsock->csock,
-										  "Server >Usage:/send username message\n", 36);
+										  "Server >Usage:/send username message\n", 37);
 									break;
 								}
 								sprintf(buf, "%s*>%s", msgsock->username, msg);
@@ -230,7 +230,6 @@ int main(int argc, char* argv[]) {
 							sprintf(buf, "%s >%s", msgsock->username, rbuf);
 							broadcast(buf);
 						}
-						break;
 					}
 				}
 				msgsock = msgsock->next;
@@ -240,7 +239,9 @@ int main(int argc, char* argv[]) {
 				SOCKLIST* csock = sockhead;
 				while(csock != NULL) {
 					close(csock->csock);
+					SOCKLIST* prev=csock;
 					csock = csock->next;
+					free(prev);
 				}
 				close(sock);
 				exit(0);
