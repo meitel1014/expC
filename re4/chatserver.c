@@ -134,6 +134,7 @@ int main(int argc, char* argv[]) {
 				}
 				if(csocknum >= MAXCLIENTS) {
 					write(csock, "REQUEST REJECTED\n", 17);
+					printf("REQUEST REJECTED:Server full\n");
 					close(csock);
 					continue;
 				}
@@ -168,7 +169,6 @@ int main(int argc, char* argv[]) {
 			while(msgsock != NULL) {
 				if(FD_ISSET(msgsock->csock,
 							&rfds)) { /* ソケットから受信したなら */
-					printf("\e[1K\r");
 					if((nbytes = read(msgsock->csock, rbuf, sizeof(rbuf)))
 					   < 0) {
 						perror("read");
@@ -199,9 +199,8 @@ int main(int argc, char* argv[]) {
 							write(msgsock->csock, buf, strlen(buf));
 						} else if(strncmp(rbuf, "/send", 5) == 0) {
 							char* targetname;
-							char* msg;
 							strtok(rbuf, " ");  // sendを切り出し
-							if((targetname = strtok(NULL, " ")) == NULL) {
+							if((targetname = strtok(NULL, " ")) == NULL||targetname[strlen(targetname)-1]=='\n') {
 								write(msgsock->csock,
 									  "Server >Usage:/send username message\n", 37);
 								continue;
@@ -218,11 +217,7 @@ int main(int argc, char* argv[]) {
 								sprintf(buf,"Server >%s:No such user online\n",targetname);
 								write(msgsock->csock, buf, strlen(buf));
 							} else {
-								if((msg = strtok(NULL, " ")) == NULL) {
-									write(msgsock->csock,
-										  "Server >Usage:/send username message\n", 37);
-									break;
-								}
+								char* msg = targetname + strlen(targetname) + 1;
 								sprintf(buf, "%s*>%s", msgsock->username, msg);
 								write(target->csock, buf, strlen(buf));
 							}
@@ -248,7 +243,7 @@ int main(int argc, char* argv[]) {
 			} else if(errno == EINTR) {
 				alarm(10);
 				signal(SIGALRM, timeup);
-				printf("\e[1K\rServer stopping...\n");
+				printf("\e[1K\e[0GServer stopping...\n");
 				broadcast("Server >10 seconds remaining\n");
 			}
 		}

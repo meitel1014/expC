@@ -37,7 +37,7 @@
 \verb|close()|でソケットを閉じてサーバとの通信を終了し，プログラムを異常終了する．
 
 \subsection{拡張機能}
-\subsubsection{プロンプト表示}
+\subsubsection{プロンプト表示}\label{sec:prompt}
 状態c4でキーボードからの入力を受け付ける際，プロンプトとして``(ユーザ名) \verb|>|''を表示するようにした．これにより，自分の入力が分かりやすくなる．ただし，これだけだと自分の送ったメッセージがサーバから返される際に同じ表示が2つ続いてしまうので，プロンプトと入力した内容は送信時に端末上の表示を消去するようにした．ただし，\ref{sec:extsrv}節で述べる\verb|/list|や\verb|/send|から始まるメッセージはそのままサーバから返ってくることはないので，その場合に限り端末上の表示は消去しない．
 
 \section{チャットサーバ}
@@ -92,6 +92,167 @@ EOFを送信したクライアントのソケットを\verb|"close()"|し．ク�
 サーバにCtrl-Cを入力しプログラムを終了しようとすると，その時点で参加しているクライアントにあと10秒で終了する旨を送信し，その10秒後にプログラムを終了する．この間に再びCtrl-Cが入力された場合，この処理を最初からやり直す(最後にCtrl-Cを入力してから10秒で終了する)．
 
 \section{実行結果}
+
+
+
+\ref{sec:prompt}
+
+\begin{verbatim}
+yk-fujit@exp051:~/expC/re4$ ./chatclient exp046 clt
+REQUEST ACCEPTED
+USERNAME REGISTERED
+Server >clt joined:1 online
+Server >sample joined:2 online
+clt >Hello
+sample >hi
+sample >aiueo
+clt >abcde
+clt >bye
+closed
+yk-fujit@exp051:~/expC/re4$ ./chatclient exp046 clt
+REQUEST ACCEPTED
+USERNAME REGISTERED
+Server >clt joined:2 online
+Server >10 seconds remaining
+clt >oh
+closed
+yk-fujit@exp051:~/expC/re4$ 
+
+yk-fujit@exp064:~/expC/re4$ ./sampleclient exp046 sample
+ICS Exercises C sample program chatclient.c
+connected to exp046
+join request accepted
+user name registered
+Server >sample joined:2 online
+clt >Hello
+hi
+sample >hi
+aiueo
+sample >aiueo
+clt >abcde
+clt >bye
+Server >clt exited:1 online
+Server >clt joined:2 online
+Server >10 seconds remaining
+clt >oh
+yk-fujit@exp064:~/expC/re4$ 
+
+yk-fujit@exp046:~/expC/re4$ ./chatserver 
+NEW USER:clt
+NEW USER:sample
+client clt closed
+NEW USER:clt
+Server stopping...
+yk-fujit@exp046:~/expC/re4$ 
+\end{verbatim}
+
+\begin{verbatim}
+yk-fujit@exp051:~/expC/re4$ ./chatclient exp046 clt
+REQUEST ACCEPTED
+USERNAME REGISTERED
+clt >hello
+sample >test
+sample >aaa
+clt >doumo
+clt >bye
+closed
+yk-fujit@exp051:~/expC/re4$ 
+
+yk-fujit@exp064:~/expC/re4$ ./sampleclient exp046 sample
+ICS Exercises C sample program chatclient.c
+connected to exp046
+join request accepted
+user name registered
+clt >hello
+test
+sample >test
+aaa
+sample >aaa
+clt >doumo
+clt >bye
+yk-fujit@exp064:~/expC/re4$
+
+yk-fujit@exp046:~/expC/re4$ ./sampleserver 
+ICS Exercises C sample program chatserver
+user<clt> connected
+user<sample> connected
+user<clt> closed
+user<sample> closed
+\end{verbatim}
+
+\begin{verbatim}
+yk-fujit@exp051:~/expC/re4$ ./chatclient exp046 clt
+REQUEST ACCEPTED
+USERNAME REGISTERED
+Server >clt joined:1 online
+clt >/list
+Server >user list:
+clt
+Server >sample joined:2 online
+clt >/list
+Server >user list:
+sample
+clt
+clt >/send sample secret
+sample*>i got it
+clt >/send aaa dummy
+Server >aaa:No such user online
+clt >/send
+Server >Usage:/send username message
+clt >/send sample secret message
+Server >sample exited:1 online
+clt >/send sample secret message
+Server >sample:No such user online
+clt >/list
+Server >user list:
+clt
+Server >sampleaaa joined:2 online
+clt >/list
+Server >user list:
+sampleaaa
+clt
+clt >
+
+yk-fujit@exp064:~/expC/re4$ ./sampleclient exp046 sample
+ICS Exercises C sample program chatclient.c
+connected to exp046
+join request accepted
+user name registered
+Server >sample joined:2 online
+clt*>secret
+/send clt i got it
+yk-fujit@exp064:~/expC/re4$ ./sampleclient exp046 sampleaaa
+ICS Exercises C sample program chatclient.c
+connected to exp046
+join request accepted
+user name registered
+Server >sampleaaa joined:2 online
+
+yk-fujit@exp046:~/expC/re4$ ./chatserver 
+NEW USER:clt
+NEW USER:sample
+client sample closed
+NEW USER:sampleaaa
+\end{verbatim}
+
+\begin{verbatim}
+yk-fujit@exp051:~/expC/re4$ ./chatclient exp046 clt
+REQUEST ACCEPTED
+USERNAME REGISTERED
+Server >clt joined:1 online
+
+yk-fujit@exp064:~/expC/re4$ ./chatclient exp046 clt
+REQUEST REJECTED
+yk-fujit@exp064:~/expC/re4$ /home/exp/staff/utiyama/public/enshu-c_sample/chatclient exp046 sample
+ICS Exercises C sample program chatclient.c
+connected to exp046
+join request rejected
+
+yk-fujit@exp046:~/expC/re4$ ./chatserver 
+NEW USER:clt
+REQUEST REJECTED:Server full
+REQUEST REJECTED:Server full
+\end{verbatim}
 
 \section{考察}
 

@@ -54,6 +54,7 @@ int main(int argc, char* argv[]) {
 	// c2 (参加)
 	read(sock, rbuf, 17);
 	if(strncmp(rbuf, "REQUEST ACCEPTED\n", 17) != 0) {
+		printf("REQUEST REJECTED\n");
 		goto C6;
 	}
 	puts("REQUEST ACCEPTED");
@@ -108,10 +109,6 @@ int main(int argc, char* argv[]) {
 					printf("%s", rbuf);
 				}
 			}
-		} else {
-			close(sock);
-			printf("\e[1K\rconnection timed out.\n");
-			exit(0);
 		}
 	}
 
