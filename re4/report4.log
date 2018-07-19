@@ -1,4 +1,4 @@
-This is e-pTeX, Version 3.14159265-p3.7-160201-2.6 (utf8.sjis) (TeX Live 2016/W32TeX) (preloaded format=platex 2017.1.7)  11 JUL 2018 00:56
+This is e-pTeX, Version 3.14159265-p3.7-160201-2.6 (utf8.sjis) (TeX Live 2016/W32TeX) (preloaded format=platex 2017.1.7)  20 JUL 2018 01:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -163,32 +163,30 @@ LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <10> not available
 (Font)              Font shape `JY1/gt/m/n' tried instead on input line 40.
 LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
 (Font)              scaled to size 9.60999pt on input line 40.
-
-
-LaTeX Warning: Reference `sec:extsrv' on page 1 undefined on input line 41.
-
-[1] [2]
-Overfull \hbox (3.60457pt too wide) in paragraph at lines 89--90
+ [1] [2] [3]
+Overfull \hbox (24.60439pt too wide) in paragraph at lines 91--92
 []\JY1/mc/m/n/10 クライアントが参加\OT1/cmr/m/n/10 /\JY1/mc/m/n/10 離脱した時 
-， 全クライアントに\OT1/cmtt/m/n/10 "Server >(user) joined/exited:(users) onlin
-e"
+， 全クライアントに\OT1/cmtt/m/n/10 "Server >(username) joined/exited:(users) o
+nline"
  []
 
-[3] [4] (./report4.aux)
+[4]
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 150.
 
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
- ) 
+ (c:/texlive/2016/texmf-dist/tex/latex/base/omscmr.fd
+File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 150.
+ [5] [6] [7] [8]
+[9] (./report4.aux) ) 
 Here is how much of TeX's memory you used:
- 839 strings out of 493683
- 9853 string characters out of 6152643
+ 857 strings out of 493683
+ 10151 string characters out of 6152643
  70710 words of memory out of 5000000
- 4452 multiletter control sequences out of 15000+600000
+ 4467 multiletter control sequences out of 15000+600000
  15285 words of font info for 70 fonts, out of 8000000 for 9000
  934 hyphenation exceptions out of 8191
- 26i,7n,21p,541b,258s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 26i,7n,21p,541b,319s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on report4.dvi (5 pages, 13224 bytes).
+Output written on report4.dvi (10 pages, 22044 bytes).

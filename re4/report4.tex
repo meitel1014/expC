@@ -9,7 +9,7 @@
 担当教員\\
 小島 英春 助教授 \\
 内山 彰 助教授}
-\date{提出日: 2018年8月3日}
+\date{提出日: 2018年7月20日}
 
 \begin{document}
 \maketitle
@@ -39,6 +39,8 @@
 \subsection{拡張機能}
 \subsubsection{プロンプト表示}\label{sec:prompt}
 状態c4でキーボードからの入力を受け付ける際，プロンプトとして``(ユーザ名) \verb|>|''を表示するようにした．これにより，自分の入力が分かりやすくなる．ただし，これだけだと自分の送ったメッセージがサーバから返される際に同じ表示が2つ続いてしまうので，プロンプトと入力した内容は送信時に端末上の表示を消去するようにした．ただし，\ref{sec:extsrv}節で述べる\verb|/list|や\verb|/send|から始まるメッセージはそのままサーバから返ってくることはないので，その場合に限り端末上の表示は消去しない．
+
+制限事項として，ユーザAがメッセージを端末上で入力中でまだ送信していない時に，ユーザBからメッセージが送信されユーザAの端末に表示されると，ユーザAが入力中の文字列は端末上の表示から消えてしまう(バッファには残っている)．これは，メッセージを受信した時点で端末のカーソルのある行の内容を端末上の表示から削除し，そのまま受信したメッセージを表示する，という実装を行っているためである．本来はプロンプトの表示を上書きするための処理であるが，これにより入力中のメッセージまで見た目上消去してしまう．
 
 \section{チャットサーバ}
 \subsection{ソケットとユーザ名の管理}
@@ -73,10 +75,10 @@ csockにはクライアントと通信するソケットのファイルディス
 次にユーザ名+改行の形でユーザ名が送信されるため，\verb|read()|で受信し，クライアントリストに同じユーザ名のものがあれば登録拒否とし，\verb|"USERNAME REJECTED\n"|を送信してソケットを閉じ，newsockをクライアントリストから削除し，csocknumを1減らして状態s3に移行する．同じユーザ名がなければ，newsockのusernameを受信したユーザ名にし，\verb|"USERNAME REGISTERED\n"|を送信する．その後状態s3に移行する．
 
 \subsection{状態s6 ---メッセージ配信---}
-\verb|select()|が反応したクライアントソケットに対し，\verb|"read()"|でメッセージを受信する．内容がEOF(\verb|read()|の返り値が0)なら状態s7に移行する．それ以外の場合，受信したメッセージの先頭にユーザ名を追加し\verb|"username >message"|の形にして，クライアントリストの全てのソケットに\verb|"write()"|する．その後状態s3に移行する．
+\verb|select()|が反応したクライアントソケットに対し，\verb|"read()"|でメッセージを受信する．内容がEOF(\verb|read()|の返り値が0)なら状態s7に移行する．それ以外の場合，受信したメッセージの先頭にユーザ名を追加し\verb|"username >message"|の形にして，クライアントリストの全てのソケットに\verb|write()|する．その後状態s3に移行する．
 
 \subsection{状態s7 ---離脱処理---}
-EOFを送信したクライアントのソケットを\verb|"close()"|し．クライアントリストから該当する要素を削除，csocknumを1減らし，状態s3に移行する．
+EOFを送信したクライアントのソケットを\verb|close()|し．クライアントリストから該当する要素を削除，csocknumを1減らし，状態s3に移行する．
 
 \subsection{拡張機能}\label{sec:extsrv}
 \subsubsection{ユーザ名リスト}
@@ -86,23 +88,15 @@ EOFを送信したクライアントのソケットを\verb|"close()"|し．ク�
 状態s6において，受信したメッセージが\verb|"/send username message"|の形であれば，ユーザ名がusernameのクライアントにのみ，messageの内容を送信する．このとき，送信するメッセージは，\verb|"(送信元のユーザ名)*>message"|とし，通常のメッセージと区別する．ユーザ名がusernameであるクライアントが接続していなかった場合や，\verb|"/send"|から始まっているが形式が不適切な場合，送信元に使用方法を送信する．
 
 \subsubsection{参加，離脱の通知}
-クライアントが参加/離脱した時，全クライアントに\verb|"Server >(user) joined/exited:(users) online"|を送信する．(user)には参加/離脱したクライアントのユーザ名が，(users)には参加中のクライアント数が入る．
+クライアントが参加/離脱した時，全クライアントに\verb|"Server >(username) joined/exited:(users) online"|を送信する．(username)には参加/離脱したクライアントのユーザ名が，(users)には参加/離脱後のクライアント数が入る．
 
 \subsubsection{サーバ終了の予告}
 サーバにCtrl-Cを入力しプログラムを終了しようとすると，その時点で参加しているクライアントにあと10秒で終了する旨を送信し，その10秒後にプログラムを終了する．この間に再びCtrl-Cが入力された場合，この処理を最初からやり直す(最後にCtrl-Cを入力してから10秒で終了する)．
 
 \section{実行結果}
-以下，exp046でサーバを，exp051とexp064でクライアントを実行する．
+以下，exp046でサーバを，exp051とexp064でクライアントを実行する．入力量を減らすため，サンプルプログラムはsampleclient,sampleserverとして作成したプログラムと同じディレクトリにコピーした．
 
-クライアント数がMAXCLIENTSを超える時の動作を確認する．chatserverのMAXCLIENTSを1に設定した．
-\begin{verbatim}
-
-\end{verbatim}
-
-
-
-\ref{sec:prompt}
-
+まず，作成したサーバでチャットの動作確認を行う．
 \begin{verbatim}
 yk-fujit@exp051:~/expC/re4$ ./chatclient exp046 clt
 REQUEST ACCEPTED
@@ -148,10 +142,17 @@ NEW USER:clt
 NEW USER:sample
 client clt closed
 NEW USER:clt
-Server stopping...
+^CServer stopping...
 yk-fujit@exp046:~/expC/re4$ 
 \end{verbatim}
+以上からわかることは以下の通り．
+\begin{itemize}
+  \item 作成したクライアントからサンプルクライアントへのメッセージの送信ができている．
+  \item サンプルクライアントから作成したクライアントへのメッセージの送信ができている．
+  \item \ref{sec:extsrv}節で述べた，サーバの拡張機能である終了予告が正しく動作している．また，サーバの終了中にもメッセージの送受信が行えている．
+\end{itemize}
 
+サーバをサンプルサーバに変えてチャットの動作確認を行う．
 \begin{verbatim}
 yk-fujit@exp051:~/expC/re4$ ./chatclient exp046 clt
 REQUEST ACCEPTED
@@ -185,7 +186,9 @@ user<sample> connected
 user<clt> closed
 user<sample> closed
 \end{verbatim}
+サンプルサーバを通じてでも，正しくメッセージの送受信が行えている．
 
+\ref{sec:extsrv}節で説明した，サーバの拡張機能の動作確認を行う．
 \begin{verbatim}
 yk-fujit@exp051:~/expC/re4$ ./chatclient exp046 clt
 REQUEST ACCEPTED
@@ -240,7 +243,22 @@ NEW USER:sample
 client sample closed
 NEW USER:sampleaaa
 \end{verbatim}
+わかることは以下の通り．
+\begin{itemize}
+  \item ユーザ名リストが正しく動作している．
+  \begin{itemize}
+    \item ユーザが出入りした後にリストの内容が正しく変更されている．
+  \end{itemize}
+  \item 秘密のメッセージ機能が正しく動作している．
+  \begin{itemize}
+    \item 秘密のメッセージには\verb|>|の前に\verb|*|がついている．
+    \item メッセージを送信した側にはメッセージの内容が送られていないことから，指定した相手以外にはメッセージが送られていない．
+    \item 形式が不適切な場合は使用法が送信元にのみ送られている．
+    \item 存在しないユーザに送信した際にエラーメッセージが送信元にのみ送られている．
+  \end{itemize}
+\end{itemize}
 
+クライアント数がMAXCLIENTSを超える時の動作を確認する．chatserverのMAXCLIENTSを1に設定した．
 \begin{verbatim}
 yk-fujit@exp051:~/expC/re4$ ./chatclient exp046 clt
 REQUEST ACCEPTED
@@ -249,7 +267,7 @@ Server >clt joined:1 online
 
 yk-fujit@exp064:~/expC/re4$ ./chatclient exp046 clt
 REQUEST REJECTED
-yk-fujit@exp064:~/expC/re4$ /home/exp/staff/utiyama/public/enshu-c_sample/chatclient exp046 sample
+yk-fujit@exp064:~/expC/re4$ ./sampleclient exp046 sample
 ICS Exercises C sample program chatclient.c
 connected to exp046
 join request rejected
@@ -259,9 +277,14 @@ NEW USER:clt
 REQUEST REJECTED:Server full
 REQUEST REJECTED:Server full
 \end{verbatim}
+二人目以降の接続が正しく拒否されている．
 
-\section{考察}
+\section{考察，工夫した点，強調したい点}
+今回使用したチャットプロトコルで他のプログラムと通信する場合，一般的には文字コードを決めておく必要があると考えられる．今回作成したプログラムは，今回の環境ではUTF-8を使用しているが，例えばWindows上の環境で同じようなプログラムを作成すると，デフォルトでは文字コードがShift-JISになっていることが多い．
+
+主に工夫した点は，\ref{sec:prompt}節で述べた，自分のメッセージが二重に表示されるのを防いだ点である．これにより，実際のチャットアプリと同様な表示が可能となる．
 
 \section{感想}
+実行結果の章で確認すべき事柄が多く検証が大変だった．
 
 \end{document}
